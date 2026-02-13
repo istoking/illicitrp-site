@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Illicit Roleplay (IRP)</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+{% include header.html %}
+<main class="container">
+  <div class="breadcrumb">{{ page.breadcrumb | default: "Home" }}</div>
+  {{ content }}
+</main>
+{% include footer.html %}
+</body>
+</html>
