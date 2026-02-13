@@ -27,7 +27,7 @@
 <div class="nav-panel" id="navPanel">
 <div class="dropdown">
           <details>
-            <summary class="pill">SOPs</summary>
+            <summary class="pill" data-i18n="nav.sops">SOPs</summary>
             <div class="dropdown-menu">
               <a href="/sops/">
                 SOP Library <span>• all SOPs</span>
@@ -47,8 +47,8 @@
             </div>
           </details>
         </div>
-        <a class="pill" href="/docs/">Docs</a>
-        <a class="pill" href="/applications/">Applications</a>
+        <a class="pill" href="/docs/" data-i18n="nav.docs">Docs</a>
+        <a class="pill" href="/applications/" data-i18n="nav.applications">Applications</a>
 <div class="dropdown">
           <details>
             <summary class="pill">Community</summary>
@@ -68,8 +68,27 @@
             </div>
           </details>
         </div>
-        <a class="pill" href="/downloads/">Downloads</a>
-        <a class="pill primary" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
+        <a class="pill" href="/downloads/" data-i18n="nav.downloads">Downloads</a>
+        
+        <div class="lang-switch" id="langSwitch">
+          <button class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" data-lang-current>EN</button>
+          <div class="lang-menu" role="menu" aria-label="Language">
+            <div class="lang-opt" role="menuitemradio" data-lang-option="en" aria-checked="true" onclick="IRP_I18N.setLang('en')">
+              <span>English</span>
+              <small>EN</small>
+            </div>
+            <div class="lang-opt" role="menuitemradio" data-lang-option="zh" aria-checked="false" onclick="IRP_I18N.setLang('zh')">
+              <span>简体中文</span>
+              <small>ZH</small>
+            </div>
+            <div class="lang-opt" role="menuitemradio" data-lang-option="ja" aria-checked="false" onclick="IRP_I18N.setLang('ja')">
+              <span>日本語</span>
+              <small>JA</small>
+            </div>
+          </div>
+        </div>
+
+        <a class="pill primary" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener" data-i18n="nav.discord">Discord</a>
 </div>
 </nav>
     </div>
@@ -79,37 +98,37 @@
 <main class="container">
   <div class="breadcrumb">Home / Docs</div>
 <section class="doc">
-  <h1>IRP Documentation</h1>
-  <p>Welcome to the IRP documentation hub. This section explains who we are, how the city works, and what we expect from players and staff.</p>
+  <h1 data-i18n="docs.hub.title">IRP Documentation</h1>
+  <p data-i18n="docs.hub.subtitle">Welcome to the IRP documentation hub. This section explains who we are, how the city works, and what we expect from players and staff.</p>
 
   <div class="callout">
-    <b>Quick start:</b> Read Getting Started, then review the SOP Library for your role.
+    <b data-i18n="docs.quickstart.title">Quick start</b>: <span data-i18n="docs.quickstart.body">Read Getting Started, then review the SOP Library for your role.</span>
   </div>
 
 <div class="doc-cardgrid">
   <a class="doc-card" href="/docs/getting-started.html">
-    <strong>Getting Started</strong>
-    <span>Join IRP, learn scene standards, and get your first day right.</span>
+    <strong data-i18n="docs.getting_started">Getting Started</strong></strong>
+    <span data-i18n="docs.getting_started.desc">Join IRP, learn scene standards, and get your first day right.</span>
   </a>
   <a class="doc-card" href="/docs/about.html">
-    <strong>About IRP</strong>
-    <span>Mission, values, identity, and how we keep RP professional.</span>
+    <strong data-i18n="docs.about">About IRP</strong></strong>
+    <span data-i18n="docs.about.desc">Mission, values, identity, and how we keep RP professional.</span>
   </a>
   <a class="doc-card" href="/docs/framework.html">
-    <strong>Framework and Tech</strong>
-    <span>Stack overview, performance philosophy, stability goals.</span>
+    <strong data-i18n="docs.framework">Framework and Tech</strong></strong>
+    <span data-i18n="docs.framework.desc">Stack overview, performance philosophy, stability goals.</span>
   </a>
   <a class="doc-card" href="/docs/systems.html">
-    <strong>Systems and Resources</strong>
-    <span>Dispatch, MDT, economy, progression, and quality-of-life.</span>
+    <strong data-i18n="docs.systems">Systems and Resources</strong></strong>
+    <span data-i18n="docs.systems.desc">Dispatch, MDT, economy, progression, and quality-of-life.</span>
   </a>
   <a class="doc-card" href="/docs/goals.html">
-    <strong>Goals and Direction</strong>
-    <span>Where IRP is headed and what we care about most.</span>
+    <strong data-i18n="docs.goals">Goals and Direction</strong></strong>
+    <span data-i18n="docs.goals.desc">Where IRP is headed and what we care about most.</span>
   </a>
   <a class="doc-card" href="/docs/faq.html">
-    <strong>FAQ</strong>
-    <span>Common questions, reporting guidance, scene expectations.</span>
+    <strong data-i18n="docs.faq">FAQ</strong></strong>
+    <span data-i18n="docs.faq.desc">Common questions, reporting guidance, scene expectations.</span>
   </a>
 </div>
 
@@ -182,11 +201,16 @@
     </a>
   </div>
 
-  <h2 style="margin-top:18px">Downloads</h2>
+  <h2 style="margin-top:18px" data-i18n="nav.downloads">Downloads</h2>
   <div class="actions" style="margin-top:16px">
     <a class="btn primary" href="/downloads/IRP_SOP_Pack_DOCX_PDF.zip">Download Full SOP Pack</a>
     <a class="btn" href="/downloads/">All Downloads</a>
   </div>
+
+<div class="callout" style="margin-top:14px">
+  <b data-i18n="i18n.disclaimer.title">Translations</b>: <span data-i18n="i18n.disclaimer.body">Translations are provided for convenience. English is the official source of truth if anything conflicts.</span>
+</div>
+
 </section>
 </main>
 <footer class="footer">
@@ -225,5 +249,35 @@
 
   <script src="/assets/js/docs.js"></script>
   <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/i18n.js"></script>
+
+<script>
+(function(){
+  const sw = document.getElementById('langSwitch');
+  if (!sw) return;
+  const btn = sw.querySelector('.lang-btn');
+  function close(){
+    sw.classList.remove('open');
+    if (btn) btn.setAttribute('aria-expanded','false');
+  }
+  function toggle(){
+    const isOpen = sw.classList.contains('open');
+    if (isOpen){
+      close();
+    } else {
+      sw.classList.add('open');
+      if (btn) btn.setAttribute('aria-expanded','true');
+    }
+  }
+  if (btn) btn.addEventListener('click', toggle);
+  document.addEventListener('click', (e)=>{
+    if (!sw.contains(e.target)) close();
+  });
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape') close();
+  });
+})();
+</script>
+
 </body>
 </html>
