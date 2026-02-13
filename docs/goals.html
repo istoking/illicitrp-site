@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Goals and Direction</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+<header class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo.png" alt="Illicit Roleplay logo" />
+        <div>
+          <div class="title">Illicit Roleplay</div>
+          <div class="sub">IRP • Serious RP</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+<div class="nav-panel" id="navPanel">
+<div class="dropdown">
+          <details>
+            <summary class="pill">SOPs</summary>
+            <div class="dropdown-menu">
+              <a href="/sops/">
+                SOP Library <span>• all SOPs</span>
+              </a>
+              <a href="/sops/civilian.html">
+                Civilian SOP <span>• IC conduct</span>
+              </a>
+              <a href="/sops/gang.html">
+                Gang SOP <span>• escalation</span>
+              </a>
+              <a href="/sops/leo-ems.html">
+                LEO / EMS SOP <span>• professionalism</span>
+              </a>
+              <a href="/sops/staff-admin.html">
+                Staff / Admin SOP <span>• tickets</span>
+              </a>
+            </div>
+          </details>
+        </div>
+        <a class="pill" href="/handbook/reporting.html">Handbook</a>
+        <a class="pill" href="/downloads/">Downloads</a>
+        <a class="pill primary" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
+</div>
+</nav>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="breadcrumb">Home / Docs / Goals and Direction</div>
+  <section class="doc">
+  <h1>Goals and Community Direction</h1>
+  <p>IRP is built for longevity. We aim to create a city where players can invest in stories that continue for months, not minutes.</p>
+
+  <h2>Short-term goals</h2>
+  <ul>
+    <li>Improve onboarding and player guidance across all roles.</li>
+    <li>Consistency in enforcement and ticket outcomes.</li>
+    <li>Polish economy and progression to reward good roleplay.</li>
+  </ul>
+
+  <h2>Long-term goals</h2>
+  <ul>
+    <li>Expand faction depth for gangs, businesses, and government roles.</li>
+    <li>Build a living city with seasonal events and evolving story arcs.</li>
+    <li>Maintain production-level performance as content grows.</li>
+  </ul>
+
+  <h2>Our passions</h2>
+  <div class="list" style="margin-top:14px">
+    <div class="item"><div class="dot"></div><div><strong>Immersion</strong><span>Roleplay that feels grounded, paced, and believable.</span></div></div>
+    <div class="item"><div class="dot"></div><div><strong>Fairness</strong><span>Clear standards and consistent enforcement for everyone.</span></div></div>
+    <div class="item"><div class="dot"></div><div><strong>Craft</strong><span>Well-built systems that enhance RP instead of replacing it.</span></div></div>
+  </div>
+</section>
+</main>
+<footer class="footer">
+  <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages.</div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.querySelector('.nav-toggle');
+  var panel = document.getElementById('navPanel');
+  if(!btn || !panel) return;
+
+  function closeMenu(){
+    panel.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  }
+
+  btn.addEventListener('click', function(){
+    var open = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Close on outside click (mobile)
+  document.addEventListener('click', function(e){
+    if (!panel.classList.contains('open')) return;
+    if (panel.contains(e.target) || btn.contains(e.target)) return;
+    closeMenu();
+  });
+
+  // Close when selecting a link
+  panel.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+})();
+</script>
+
+</body>
+</html>

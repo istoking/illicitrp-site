@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>IRP Glossary</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+<header class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo.png" alt="Illicit Roleplay logo" />
+        <div>
+          <div class="title">Illicit Roleplay</div>
+          <div class="sub">IRP • Serious RP</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+<div class="nav-panel" id="navPanel">
+<div class="dropdown">
+          <details>
+            <summary class="pill">SOPs</summary>
+            <div class="dropdown-menu">
+              <a href="/sops/">
+                SOP Library <span>• all SOPs</span>
+              </a>
+              <a href="/sops/civilian.html">
+                Civilian SOP <span>• IC conduct</span>
+              </a>
+              <a href="/sops/gang.html">
+                Gang SOP <span>• escalation</span>
+              </a>
+              <a href="/sops/leo-ems.html">
+                LEO / EMS SOP <span>• professionalism</span>
+              </a>
+              <a href="/sops/staff-admin.html">
+                Staff / Admin SOP <span>• tickets</span>
+              </a>
+            </div>
+          </details>
+        </div>
+        <a class="pill" href="/handbook/reporting.html">Handbook</a>
+        <a class="pill" href="/downloads/">Downloads</a>
+        <a class="pill primary" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
+</div>
+</nav>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="breadcrumb">Home / Handbook / Glossary</div>
+  <section class="doc">
+  <h1>Glossary</h1>
+  <p>Common IRP terms used across SOPs.</p>
+  <h2>Roleplay Terms</h2>
+  <ul>
+    <li><b>IC</b>: In Character.</li>
+    <li><b>OOC</b>: Out of Character.</li>
+    <li><b>Scene</b>: A continuous RP interaction (stop, robbery, chase, medical, investigation).</li>
+  </ul>
+  <h2>Rule Concepts</h2>
+  <ul>
+    <li><b>RDM</b>: Random Deathmatch.</li>
+    <li><b>VDM</b>: Vehicle Deathmatch.</li>
+    <li><b>Powergaming</b>: Forcing outcomes or unrealistic advantage play.</li>
+    <li><b>Metagaming</b>: Using OOC information IC.</li>
+    <li><b>FailRP</b>: Breaking realism or ignoring consequences.</li>
+    <li><b>NVL</b>: Not valuing life when faced with credible threat.</li>
+  </ul>
+</section>
+</main>
+<footer class="footer">
+  <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages.</div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.querySelector('.nav-toggle');
+  var panel = document.getElementById('navPanel');
+  if(!btn || !panel) return;
+
+  function closeMenu(){
+    panel.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  }
+
+  btn.addEventListener('click', function(){
+    var open = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Close on outside click (mobile)
+  document.addEventListener('click', function(e){
+    if (!panel.classList.contains('open')) return;
+    if (panel.contains(e.target) || btn.contains(e.target)) return;
+    closeMenu();
+  });
+
+  // Close when selecting a link
+  panel.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+})();
+</script>
+
+</body>
+</html>
