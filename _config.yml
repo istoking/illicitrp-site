@@ -3,4 +3,3 @@ markdown: kramdown
 kramdown:
   input: GFM
 exclude:
-  - gitbook
