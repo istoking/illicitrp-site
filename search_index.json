@@ -1,110 +1,56 @@
 [
   {
-    "title": "Changelog",
-    "url": "/changelog//",
-    "snippet": "IRP Changelog Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Ch",
-    "category": "Changelog"
+    "title": "Home",
+    "url": "/",
+    "snippet": "Illicit Roleplay (IRP) Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules an",
+    "category": "Home"
   },
   {
-    "title": "About Illicit Roleplay",
-    "url": "/docs/about.html",
-    "snippet": "About IRP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Docs /",
+    "title": "Docs",
+    "url": "/docs/",
+    "snippet": "IRP Documentation Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules and rep",
     "category": "Docs"
   },
   {
-    "title": "FAQ",
-    "url": "/docs/faq.html",
-    "snippet": "FAQ Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Docs / FAQ F",
-    "category": "Docs"
+    "title": "Handbook",
+    "url": "/handbook/",
+    "snippet": "IRP Reporting Handbook Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules an",
+    "category": "Handbook"
   },
   {
-    "title": "Framework and Tech Overview",
-    "url": "/docs/framework.html",
-    "snippet": "Framework and Tech Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home",
-    "category": "Docs"
-  },
-  {
-    "title": "Getting Started",
-    "url": "/docs/getting-started.html",
-    "snippet": "Getting Started Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home /",
-    "category": "Docs"
-  },
-  {
-    "title": "Goals and Community Direction",
-    "url": "/docs/goals.html",
-    "snippet": "Goals and Direction Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Hom",
-    "category": "Docs"
-  },
-  {
-    "title": "IRP Documentation",
-    "url": "/docs//",
-    "snippet": "IRP Documentation Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home",
-    "category": "Docs"
-  },
-  {
-    "title": "Key Systems and Resources",
-    "url": "/docs/systems.html",
-    "snippet": "Key Systems and Resources Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Disco",
-    "category": "Docs"
+    "title": "Applications",
+    "url": "/applications/",
+    "snippet": "Applications Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules and reportin",
+    "category": "Applications"
   },
   {
     "title": "Downloads",
-    "url": "/downloads//",
-    "snippet": "IRP Downloads Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Do",
+    "url": "/downloads/",
+    "snippet": "IRP Downloads Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules and reporti",
     "category": "Downloads"
   },
   {
-    "title": "FAQ",
-    "url": "/handbook/faq.html",
-    "snippet": "IRP FAQ Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Handbook",
-    "category": "Handbook"
-  },
-  {
-    "title": "Glossary",
-    "url": "/handbook/glossary.html",
-    "snippet": "IRP Glossary Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Han",
-    "category": "Handbook"
-  },
-  {
-    "title": "Reporting Handbook",
-    "url": "/handbook/reporting.html",
-    "snippet": "IRP Reporting Handbook Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord",
-    "category": "Handbook"
-  },
-  {
-    "title": "Index",
-    "url": "//",
-    "snippet": "Illicit Roleplay (IRP) Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord",
-    "category": "Site"
-  },
-  {
-    "title": "IRP Civilian SOP",
-    "url": "/sops/civilian.html",
-    "snippet": "IRP Civilian SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home /",
+    "title": "SOP Library",
+    "url": "/sops/",
+    "snippet": "IRP SOPs Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules and reporting Ch",
     "category": "SOPs"
   },
   {
-    "title": "IRP Gang SOP",
-    "url": "/sops/gang.html",
-    "snippet": "IRP Gang SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / SOP",
-    "category": "SOPs"
+    "title": "Changelog",
+    "url": "/changelog/",
+    "snippet": "IRP Changelog Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules and reporti",
+    "category": "Changelog"
   },
   {
-    "title": "IRP SOP Library",
-    "url": "/sops//",
-    "snippet": "IRP SOPs Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / SOPs IR",
-    "category": "SOPs"
+    "title": "Announcements",
+    "url": "/announcements/",
+    "snippet": "IRP Announcements Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules and rep",
+    "category": "Announcements"
   },
   {
-    "title": "IRP LEO & EMS SOP",
-    "url": "/sops/leo-ems.html",
-    "snippet": "IRP LEO & EMS SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home",
-    "category": "SOPs"
-  },
-  {
-    "title": "IRP Staff & Admin SOP",
-    "url": "/sops/staff-admin.html",
-    "snippet": "IRP Staff & Admin SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord H",
-    "category": "SOPs"
+    "title": "Status",
+    "url": "/status/",
+    "snippet": "IRP Announcements Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Docs Applications Community Handbook \u2022 rules and rep",
+    "category": "Status"
   }
 ]

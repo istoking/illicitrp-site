@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0f14" />
-  <title>IRP FAQ</title>
+  <title>IRP Announcements</title>
   <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
@@ -77,21 +77,59 @@
 </header>
 
 <main class="container">
-  <div class="breadcrumb">Home / Handbook / Faq</div>
-  <section class="doc">
-  <h1>FAQ</h1>
-  <h2>What if someone is breaking rules in my scene?</h2>
-  <p>Finish the scene IC. Do not accuse mid-scene. Open a ticket after with evidence.</p>
+  <div class="breadcrumb">Home / Status</div>
+<section class="doc">
+  <h1>Status</h1>
+  <p>This page shows service status for IRP. If something looks wrong, check Discord announcements and support.</p>
 
-  <h2>Can staff fix things mid-scene?</h2>
-  <p>Staff avoids interrupting RP. They intervene immediately only for severe harassment, clear cheating harming multiple players right now, or server stability issues.</p>
+  <div class="status-grid" style="margin-top:14px">
+    <div class="status-card" id="svc-site">
+      <div class="status-top">
+        <strong>Website</strong>
+        <span class="status-pill ok" data-pill="site">OK</span>
+      </div>
+      <p class="muted">illicitrp.com</p>
+    </div>
 
-  <h2>Do I need clips to report?</h2>
-  <p>Clips are strongly recommended for consistent outcomes. Screenshots help but rarely show full context.</p>
+    <div class="status-card" id="svc-fivem">
+      <div class="status-top">
+        <strong>FiveM Server</strong>
+        <span class="status-pill warn" data-pill="fivem">Unknown</span>
+      </div>
+      <p class="muted">Status is updated from status.json when available.</p>
+    </div>
 
-  <h2>Where do I download SOPs?</h2>
-  <p>Go to <a class="pill" href="/downloads/">Downloads</a> or each SOP page for PDF and DOCX.</p>
+    <div class="status-card" id="svc-discord">
+      <div class="status-top">
+        <strong>Discord</strong>
+        <span class="status-pill ok" data-pill="discord">OK</span>
+      </div>
+      <p class="muted">discord.gg/xXru9PEFdg</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:14px">
+    <b>Note:</b> If you are seeing issues in-game, create a support ticket in Discord after your scene ends.
+  </div>
 </section>
+
+<script>
+(async () => {
+  try {
+    const res = await fetch('/status.json', { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+
+    const fivem = document.querySelector('[data-pill="fivem"]');
+    if (fivem && data && data.fivem) {
+      const state = String(data.fivem.status || 'unknown').toLowerCase();
+      fivem.textContent = state === 'online' ? 'Online' : state === 'offline' ? 'Offline' : 'Unknown';
+      fivem.classList.remove('ok','warn','bad');
+      fivem.classList.add(state === 'online' ? 'ok' : state === 'offline' ? 'bad' : 'warn');
+    }
+  } catch (e) {}
+})();
+</script>
 </main>
 <footer class="footer">
   <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages / Cloudflare Pages.</div>
@@ -127,6 +165,8 @@
 })();
 </script>
 
+  <script src="/assets/js/docs.js"></script>
   <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/announcements.js"></script>
 </body>
 </html>

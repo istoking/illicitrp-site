@@ -49,27 +49,27 @@
     "items": [
       {
         "title": "SOP Library",
-        "url": "/sops/",
+        "url": "/docs/sops/",
         "desc": "All SOPs in one place"
       },
       {
         "title": "Civilian SOP",
-        "url": "/sops/civilian.html",
+        "url": "/docs/sops/civilian.html",
         "desc": "Scene integrity, IC conduct, reporting workflow"
       },
       {
         "title": "Gang SOP",
-        "url": "/sops/gang.html",
+        "url": "/docs/sops/gang.html",
         "desc": "Escalation, territory, conflict standards, conduct"
       },
       {
         "title": "LEO and EMS SOP",
-        "url": "/sops/leo-ems.html",
+        "url": "/docs/sops/leo-ems.html",
         "desc": "Professional response, neutrality, procedures"
       },
       {
         "title": "Staff and Admin SOP",
-        "url": "/sops/staff-admin.html",
+        "url": "/docs/sops/staff-admin.html",
         "desc": "Tickets, enforcement, IC and OOC handling"
       }
     ]
@@ -83,9 +83,9 @@
         "desc": "Open Discord support tickets"
       },
       {
-        "title": "Downloads",
+        "title": "Downloads and Print Packs",
         "url": "/downloads/",
-        "desc": "SOP pack and assets"
+        "desc": "Optional PDF and DOCX packs for offline use"
       }
     ]
   }

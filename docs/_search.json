@@ -1,67 +1,62 @@
 [
   {
-    "title": "About Illicit Roleplay",
+    "title": "About IRP",
     "url": "/docs/about.html",
-    "snippet": "About IRP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Docs /"
+    "snippet": "Home / Docs / About About Illicit Roleplay Illicit Roleplay (IRP) is a serious roleplay community built around long-term character development, immersive scenes, and consistent enforcement. We focus on strong storytelling, respectful player conduct, and rolepl"
   },
   {
     "title": "FAQ",
     "url": "/docs/faq.html",
-    "snippet": "FAQ Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / Docs / FAQ F"
+    "snippet": "Home / Docs / FAQ FAQ How do I report rule breaks Stay in character, finish the scene, and submit a ticket with clear evidence. Use the Reporting Guide . What is serious RP Serious roleplay focuses on believable behavior, consistent character choices, realisti"
   },
   {
-    "title": "Framework and Tech Overview",
+    "title": "Framework and Tech",
     "url": "/docs/framework.html",
-    "snippet": "Framework and Tech Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home"
+    "snippet": "Home / Docs / Framework and Tech Framework and Tech Overview IRP is built on a modern FiveM stack with a focus on stability, performance, and long-term maintainability. Core philosophy Production over prototypes: features should be reliable and low impact. Cle"
   },
   {
     "title": "Getting Started",
     "url": "/docs/getting-started.html",
-    "snippet": "Getting Started Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home /"
+    "snippet": "Home / Docs / Getting Started Getting Started This guide helps you join IRP and get into the city with minimum friction. Before you join Read the SOP Library and the Reporting Guide . Set your voice and keybinds so you can communicate clearly in scenes. Have a"
   },
   {
-    "title": "Goals and Community Direction",
+    "title": "Goals and Direction",
     "url": "/docs/goals.html",
-    "snippet": "Goals and Direction Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Hom"
+    "snippet": "Home / Docs / Goals and Direction Goals and Community Direction IRP is built for longevity. We aim to create a city where players can invest in stories that continue for months, not minutes. Short-term goals Improve onboarding and player guidance across all ro"
   },
   {
     "title": "IRP Documentation",
     "url": "/docs/",
-    "snippet": "--- layout: default title: \"IRP Documentation\" breadcrumb: \"Home / Docs\" --- IRP Documentation Welcome to the IRP documentation hub. This section explains who we are, how the city works, and what we expect from players a"
+    "snippet": "Home / Docs IRP Documentation Welcome to the IRP documentation hub. This section explains who we are, how the city works, and what we expect from players and staff. Quick start: Read Getting Started, then review the SOP Library for your role. Getting Started J"
+  },
+  {
+    "title": "IRP Civilian SOP",
+    "url": "/docs/sops/civilian.html",
+    "snippet": "Home / SOPs / Civilian IRP Civilian SOP Production-level SOP for IRP. For the full document, download the PDF/DOCX below. Quick Standard Summary Stay IC in city and during scenes. No OOC arguments mid-scene. Report after. Scene integrity: no combat logging or "
+  },
+  {
+    "title": "IRP Gang SOP",
+    "url": "/docs/sops/gang.html",
+    "snippet": "Home / SOPs / Gang IRP Gang SOP Production-level SOP for IRP. For the full document, download the PDF/DOCX below. Quick Standard Summary Official gangs: Lost MC, Ballas, Vagos, Cartel, Families, Triads. No instant KOS. Escalation and lead-up required. No grief"
+  },
+  {
+    "title": "IRP SOPs",
+    "url": "/docs/sops/index.html",
+    "snippet": "Home / SOPs IRP SOP Library Select a Standard Operating Procedure below. Each page includes quick summaries plus PDF/DOCX downloads. Civilian SOP IC standards, scene integrity, escalation, reporting. Gang SOP Escalation, territory, hostages, conflict conduct. "
+  },
+  {
+    "title": "IRP LEO & EMS SOP",
+    "url": "/docs/sops/leo-ems.html",
+    "snippet": "Home / SOPs / Leo Ems IRP LEO & EMS SOP Production-level SOP for IRP. For the full document, download the PDF/DOCX below. Quick Standard Summary Professionalism and calm tone are mandatory. Scene-first decisions: do not rush outcomes. Proportional escalation a"
+  },
+  {
+    "title": "IRP Staff & Admin SOP",
+    "url": "/docs/sops/staff-admin.html",
+    "snippet": "Home / SOPs / Staff Admin IRP Staff & Admin SOP Production-level SOP for IRP. For the full document, download the PDF/DOCX below. Quick Standard Summary Neutrality, consistency, evidence-based decisions. Production ticket workflow and documentation. Graduated "
   },
   {
     "title": "Key Systems and Resources",
     "url": "/docs/systems.html",
-    "snippet": "Key Systems and Resources Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Disco"
-  },
-  {
-    "title": "IRP Civilian SOP",
-    "url": "/sops/civilian.html",
-    "snippet": "IRP Civilian SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home /"
-  },
-  {
-    "title": "IRP Gang SOP",
-    "url": "/sops/gang.html",
-    "snippet": "IRP Gang SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / SOP"
-  },
-  {
-    "title": "IRP LEO & EMS SOP",
-    "url": "/sops/leo-ems.html",
-    "snippet": "IRP LEO & EMS SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home"
-  },
-  {
-    "title": "IRP Staff & Admin SOP",
-    "url": "/sops/staff-admin.html",
-    "snippet": "IRP Staff & Admin SOP Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord H"
-  },
-  {
-    "title": "IRP SOP Library",
-    "url": "/sops/",
-    "snippet": "IRP SOPs Illicit Roleplay IRP \u2022 Serious RP SOPs SOP Library \u2022 all SOPs Civilian SOP \u2022 IC conduct Gang SOP \u2022 escalation LEO / EMS SOP \u2022 professionalism Staff / Admin SOP \u2022 tickets Handbook Downloads Discord Home / SOPs IR"
-  },
-  {
-    "title": "Discord Support Tickets",
-    "url": "https://discord.gg/xXru9PEFdg",
-    "snippet": "Open a ticket in Discord using the support channel options. Finish scenes IC first, then report with clean evidence."
+    "snippet": "Home / Docs / Systems and Resources Key Systems and Resources This page explains the major systems players interact with. It is written in plain language and focuses on what to expect in roleplay. Law enforcement and emergency Dispatch and calls: incident repo"
   }
 ]

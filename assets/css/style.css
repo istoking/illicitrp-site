@@ -470,3 +470,38 @@ main.container { padding-bottom: 48px; }
 }
 
 .hero .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+
+/* IRP: Wider layout for long forms */
+.container.wide{max-width:1240px}
+
+/* IRP: Applications form layout */
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.formgrid.full{grid-template-columns:1fr}
+@media (max-width: 900px){
+  .formgrid{grid-template-columns:1fr}
+}
+.field{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:14px}
+.field label{display:block;font-weight:700;font-size:13px;margin-bottom:8px}
+.field input,.field select,.field textarea{
+  width:100%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.25);
+  color:inherit;
+  border-radius:12px;
+  padding:10px 12px;
+  outline:none;
+}
+.field textarea{min-height:110px;resize:vertical}
+.helper{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.55}
+.doc-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:var(--muted);font-size:12px}
+
+/* IRP: Status cards */
+.status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width: 900px){.status-grid{grid-template-columns:1fr}}
+.status-card{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:16px;padding:14px}
+.status-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.status-pill{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)}
+.status-pill.ok{border-color:rgba(71,207,115,.35);background:rgba(71,207,115,.10);color:rgba(71,207,115,1)}
+.status-pill.warn{border-color:rgba(255,193,7,.35);background:rgba(255,193,7,.10);color:rgba(255,193,7,1)}
+.status-pill.bad{border-color:rgba(220,53,69,.35);background:rgba(220,53,69,.10);color:rgba(220,53,69,1)}
