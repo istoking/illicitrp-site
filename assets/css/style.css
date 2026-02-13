@@ -147,3 +147,47 @@ a{color:inherit;text-decoration:none}
 
 /* Main spacing so content never touches footer */
 main.container { padding-bottom: 48px; }
+
+
+/* --- Mobile Nav --- */
+.nav-toggle{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.03);
+  cursor:pointer;
+}
+.nav-toggle svg{width:20px;height:20px}
+.nav-panel{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+
+@media (max-width: 860px){
+  .nav-toggle{display:inline-flex}
+  .nav-panel{
+    display:none;
+    position:absolute;
+    left:20px;
+    right:20px;
+    top:72px;
+    padding:12px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:rgba(11,15,20,.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .nav-panel.open{display:flex}
+  .nav-panel .pill{justify-content:center}
+  .dropdown-menu{
+    position: static;
+    min-width: unset;
+    box-shadow: none;
+    margin-top: 10px;
+  }
+  .dropdown-menu a{justify-content:space-between}
+}
