@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0f14" />
-  <title data-i18n="nav.applications">Applications</title>
+  <title>Applications</title>
   <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
@@ -27,7 +27,7 @@
 <div class="nav-panel" id="navPanel">
 <div class="dropdown">
           <details>
-            <summary class="pill" data-i18n="nav.sops">SOPs</summary>
+            <summary class="pill">SOPs</summary>
             <div class="dropdown-menu">
               <a href="/sops/">
                 SOP Library <span>• all SOPs</span>
@@ -47,8 +47,8 @@
             </div>
           </details>
         </div>
-        <a class="pill" href="/docs/" data-i18n="nav.docs">Docs</a>
-        <a class="pill" href="/applications/" data-i18n="nav.applications">Applications</a>
+        <a class="pill" href="/docs/">Docs</a>
+        <a class="pill" href="/applications/">Applications</a>
 <div class="dropdown">
           <details>
             <summary class="pill">Community</summary>
@@ -68,27 +68,8 @@
             </div>
           </details>
         </div>
-        <a class="pill" href="/downloads/" data-i18n="nav.downloads">Downloads</a>
-        
-        <div class="lang-switch" id="langSwitch">
-          <button class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" data-lang-current>EN</button>
-          <div class="lang-menu" role="menu" aria-label="Language">
-            <div class="lang-opt" role="menuitemradio" data-lang-option="en" aria-checked="true" onclick="IRP_I18N.setLang('en')">
-              <span>English</span>
-              <small>EN</small>
-            </div>
-            <div class="lang-opt" role="menuitemradio" data-lang-option="zh" aria-checked="false" onclick="IRP_I18N.setLang('zh')">
-              <span>简体中文</span>
-              <small>ZH</small>
-            </div>
-            <div class="lang-opt" role="menuitemradio" data-lang-option="ja" aria-checked="false" onclick="IRP_I18N.setLang('ja')">
-              <span>日本語</span>
-              <small>JA</small>
-            </div>
-          </div>
-        </div>
-
-        <a class="pill primary" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener" data-i18n="nav.discord">Discord</a>
+        <a class="pill" href="/downloads/"> data-i18n="footer.downloads">Downloads</a>
+        <a class="pill primary" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
 </div>
 </nav>
     </div>
@@ -98,8 +79,8 @@
 <main class="container wide">
   <div class="breadcrumb">Home / Applications</div>
 <section class="doc">
-  <h1 data-i18n="apps.title">Applications</h1>
-  <p data-i18n="apps.subtitle">Choose the application type below. Your submission is sent to Discord for staff review.</p>
+  <h1>Applications</h1>
+  <p>IRP uses structured applications to maintain serious roleplay standards. Applications are designed to evaluate mindset, maturity, and roleplay decision-making.</p>
 
   <div class="callout">
     <b>How it works:</b> Fill out the questionnaire, then submit it through Discord support. This keeps everything in one place for staff review.
@@ -121,11 +102,6 @@
 
   <h2 style="margin-top:18px">Submission</h2>
   <p>After completing the form, the page will generate a formatted submission. Copy it and paste it into the correct Discord ticket option.</p>
-
-<div class="callout" style="margin-top:14px">
-  <b data-i18n="i18n.disclaimer.title">Translations</b>: <span data-i18n="i18n.disclaimer.body">Translations are provided for convenience. English is the official source of truth if anything conflicts.</span>
-</div>
-
 </section>
 </main>
 <footer class="footer">
@@ -165,35 +141,5 @@
   <script src="/assets/js/docs.js"></script>
   <script src="/assets/js/global.js"></script>
   <script src="/assets/js/applications.js"></script>
-  <script src="/assets/js/i18n.js"></script>
-
-<script>
-(function(){
-  const sw = document.getElementById('langSwitch');
-  if (!sw) return;
-  const btn = sw.querySelector('.lang-btn');
-  function close(){
-    sw.classList.remove('open');
-    if (btn) btn.setAttribute('aria-expanded','false');
-  }
-  function toggle(){
-    const isOpen = sw.classList.contains('open');
-    if (isOpen){
-      close();
-    } else {
-      sw.classList.add('open');
-      if (btn) btn.setAttribute('aria-expanded','true');
-    }
-  }
-  if (btn) btn.addEventListener('click', toggle);
-  document.addEventListener('click', (e)=>{
-    if (!sw.contains(e.target)) close();
-  });
-  document.addEventListener('keydown', (e)=>{
-    if (e.key === 'Escape') close();
-  });
-})();
-</script>
-
 </body>
 </html>
