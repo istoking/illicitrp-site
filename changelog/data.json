@@ -1,0 +1,95 @@
+[
+  {
+    "date": "2026-02-13",
+    "type": "Website",
+    "title": "Applications portal added",
+    "details": [
+      "Added Join and Whitelist applications with structured questionnaires.",
+      "Applicants generate a formatted submission and submit via Discord support tickets.",
+      "Added Announcements page for official updates."
+    ]
+  },
+  {
+    "date": "2026-02-13",
+    "type": "Website",
+    "title": "Global search and status banner",
+    "details": [
+      "Ctrl K global search across docs, SOPs, handbook, downloads, changelog.",
+      "Sticky status banner reads status.json and shows quick actions.",
+      "Changelog and support are one click away from every page."
+    ]
+  },
+  {
+    "date": "2026-02-12",
+    "type": "Core",
+    "title": "Production website and SOP suite deployed",
+    "details": [
+      "Launched the official IRP website on GitHub Pages with modern responsive UI.",
+      "Published full SOP pack plus downloads and handbook.",
+      "Discord-first support workflow integrated across the site."
+    ]
+  },
+  {
+    "date": "2026-02-12",
+    "type": "UI",
+    "title": "Optimized target and HUD upgrades",
+    "details": [
+      "Target and interaction UI patterns improved for clarity and performance.",
+      "HUD UX improved with compass replacement for better readability."
+    ]
+  },
+  {
+    "date": "2026-02-12",
+    "type": "Police",
+    "title": "Dispatch and MDT integration foundation",
+    "details": [
+      "Prepared workflow between dispatch, MDT, and police job for RP continuity.",
+      "Cleaned event flow to reduce desync and improve reliability."
+    ]
+  },
+  {
+    "date": "2026-02-12",
+    "type": "Economy",
+    "title": "Chopshop and package gameplay improvements",
+    "details": [
+      "Updated chopshop flow to support solo-friendly progression and better part handling.",
+      "Expanded package and vehicle robbery loops for organic crime roleplay."
+    ]
+  },
+  {
+    "date": "2026-02-12",
+    "type": "Security",
+    "title": "Anti-exploit and admin response baseline",
+    "details": [
+      "Introduced production-minded detection and admin response concepts.",
+      "Focus on low-impact checks, logging, and staff visibility."
+    ]
+  },
+  {
+    "date": "2026-02-12",
+    "type": "Jobs",
+    "title": "Taxi exploitation hardening plan",
+    "details": [
+      "Added route adherence checks and recovery logic for AI fare jobs.",
+      "Improved passenger behavior and reduced common door and exit glitches."
+    ]
+  },
+  {
+    "date": "2026-02-10",
+    "type": "Gameplay",
+    "title": "Sit system remake",
+    "details": [
+      "Rebuilt seat interactions using qb-target with drawtext fallback.",
+      "Animation handling aligned with rpemotes style for consistency."
+    ]
+  },
+  {
+    "date": "2026-02-10",
+    "type": "Crime",
+    "title": "Scrap thief enhancements and AI security behavior",
+    "details": [
+      "Improved proximity-based security spawns to keep performance stable.",
+      "Standardized dispatch behavior and tuned interaction windows."
+    ]
+  }
+]

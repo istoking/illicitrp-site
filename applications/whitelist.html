@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Whitelisted Job Applications</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+<header class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo.png" alt="Illicit Roleplay logo" />
+        <div>
+          <div class="title">Illicit Roleplay</div>
+          <div class="sub">IRP • Serious RP</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+<div class="nav-panel" id="navPanel">
+<div class="dropdown">
+          <details>
+            <summary class="pill">SOPs</summary>
+            <div class="dropdown-menu">
+              <a href="/sops/">
+                SOP Library <span>• all SOPs</span>
+              </a>
+              <a href="/sops/civilian.html">
+                Civilian SOP <span>• IC conduct</span>
+              </a>
+              <a href="/sops/gang.html">
+                Gang SOP <span>• escalation</span>
+              </a>
+              <a href="/sops/leo-ems.html">
+                LEO / EMS SOP <span>• professionalism</span>
+              </a>
+              <a href="/sops/staff-admin.html">
+                Staff / Admin SOP <span>• tickets</span>
+              </a>
+            </div>
+          </details>
+        </div>
+        <a class="pill" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Handbook</a>
+        <a class="pill" href="/downloads/">Downloads</a>
+        <a class="pill primary" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
+</div>
+</nav>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="breadcrumb">Home / Applications / Whitelist</div>
+<section class="doc">
+  <h1>Whitelisted Job Applications</h1>
+  <p>Whitelisted roles require consistent professionalism, strong communication, and neutral decision-making. Select the role you are applying for and complete the questionnaire.</p>
+
+  <div class="kpi">
+    <span class="doc-pill">Submission: Discord ticket</span>
+    <span class="doc-pill">Category: Whitelist Application</span>
+    <span class="doc-pill">Expected standard: High</span>
+  </div>
+
+  <div class="formgrid">
+    <div class="field">
+      <label>Discord username</label>
+      <input id="w_discord" type="text" placeholder="name#0000 or @name" />
+    </div>
+
+    <div class="field">
+      <label>Role you are applying for</label>
+      <select id="w_role">
+        <option value="">Select</option>
+        <option>Police</option>
+        <option>EMS</option>
+        <option>Mechanic</option>
+        <option>Taxi</option>
+        <option>Tow</option>
+        <option>Government</option>
+        <option>Legal</option>
+        <option>Business Ownership</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="formgrid full">
+    <div class="field">
+      <label>Why do you want this role</label>
+      <textarea id="w_why" placeholder="Explain your motivation and what you add to the server"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Decision-making under pressure</label>
+      <textarea id="w_pressure" placeholder="Describe how you act when things get hectic or chaotic"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Neutrality and professionalism</label>
+      <textarea id="w_neutral" placeholder="How do you avoid favoritism and keep interactions fair"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Knowledge check</label>
+      <textarea id="w_knowledge" placeholder="What SOP or standards do you think matter most for this role and why"></textarea>
+      <div class="helper">Reference the IRP SOPs and how you will apply them.</div>
+    </div>
+
+    <div class="field">
+      <label>Availability</label>
+      <textarea id="w_avail" placeholder="Your typical play times and expected activity level"></textarea>
+    </div>
+  </div>
+
+  <div class="actions" style="margin-top:16px">
+    <button class="btn primary" id="wlBuild">Generate Submission</button>
+    <a class="btn" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Open Discord Support</a>
+    <a class="btn" href="/applications/">Back</a>
+  </div>
+
+  <div id="wlOutWrap" class="docs-results open" style="margin-top:14px; display:none"></div>
+</section>
+</main>
+<footer class="footer">
+  <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages / Cloudflare Pages.</div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.querySelector('.nav-toggle');
+  var panel = document.getElementById('navPanel');
+  if(!btn || !panel) return;
+
+  function closeMenu(){
+    panel.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  }
+
+  btn.addEventListener('click', function(){
+    var open = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Close on outside click (mobile)
+  document.addEventListener('click', function(e){
+    if (!panel.classList.contains('open')) return;
+    if (panel.contains(e.target) || btn.contains(e.target)) return;
+    closeMenu();
+  });
+
+  // Close when selecting a link
+  panel.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+})();
+</script>
+
+  <script src="/assets/js/docs.js"></script>
+  <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/applications.js"></script>
+</body>
+</html>
