@@ -1,0 +1,92 @@
+[
+  {
+    "group": "Start Here",
+    "items": [
+      {
+        "title": "Docs Home",
+        "url": "/docs/",
+        "desc": "Documentation hub and quick links"
+      },
+      {
+        "title": "Getting Started",
+        "url": "/docs/getting-started.html",
+        "desc": "Join, scene integrity, first-day checklist"
+      },
+      {
+        "title": "About IRP",
+        "url": "/docs/about.html",
+        "desc": "Mission, values, identity"
+      },
+      {
+        "title": "Goals and Direction",
+        "url": "/docs/goals.html",
+        "desc": "Vision, direction, community focus"
+      }
+    ]
+  },
+  {
+    "group": "How the City Works",
+    "items": [
+      {
+        "title": "Framework and Tech",
+        "url": "/docs/framework.html",
+        "desc": "Stack overview and stability approach"
+      },
+      {
+        "title": "Systems and Resources",
+        "url": "/docs/systems.html",
+        "desc": "Dispatch, MDT, economy, progression"
+      },
+      {
+        "title": "FAQ",
+        "url": "/docs/faq.html",
+        "desc": "Common questions and answers"
+      }
+    ]
+  },
+  {
+    "group": "SOPs",
+    "items": [
+      {
+        "title": "SOP Library",
+        "url": "/sops/",
+        "desc": "All SOPs in one place"
+      },
+      {
+        "title": "Civilian SOP",
+        "url": "/sops/civilian.html",
+        "desc": "Scene integrity, IC conduct, reporting workflow"
+      },
+      {
+        "title": "Gang SOP",
+        "url": "/sops/gang.html",
+        "desc": "Escalation, territory, conflict standards, conduct"
+      },
+      {
+        "title": "LEO and EMS SOP",
+        "url": "/sops/leo-ems.html",
+        "desc": "Professional response, neutrality, procedures"
+      },
+      {
+        "title": "Staff and Admin SOP",
+        "url": "/sops/staff-admin.html",
+        "desc": "Tickets, enforcement, IC and OOC handling"
+      }
+    ]
+  },
+  {
+    "group": "SOPs and Operations",
+    "items": [
+      {
+        "title": "Reporting and Tickets",
+        "url": "/handbook/reporting.html",
+        "desc": "Evidence standards and ticket flow"
+      },
+      {
+        "title": "Downloads",
+        "url": "/downloads/",
+        "desc": "SOP pack and assets"
+      }
+    ]
+  }
+]
