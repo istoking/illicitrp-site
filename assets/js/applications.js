@@ -3,7 +3,6 @@
 
   // Site config (kept in /status.json so it is easy to change without touching multiple pages)
   var SITE_CFG = null;
-<<<<<<< HEAD
 
   async function fetchFirstJson(paths){
     for(var i=0;i<paths.length;i++){
@@ -14,18 +13,6 @@
       }catch(e){
         // keep trying
       }
-=======
-  async function loadSiteConfig(){
-    if(SITE_CFG !== null) return SITE_CFG;
-    try{
-      var r = await fetch('/status.json', { cache: 'no-store' });
-      if(!r.ok) { SITE_CFG = {}; return SITE_CFG; }
-      SITE_CFG = await r.json();
-      return SITE_CFG;
-    }catch(e){
-      SITE_CFG = {};
-      return SITE_CFG;
->>>>>>> cf6df21edd996819cf33c516fa2531724a26b221
     }
     return {};
   }
@@ -45,23 +32,6 @@
       SITE_CFG = {};
       return SITE_CFG;
     }
-  }
-
-  async function loadWorkerBase(){
-    var cfg = await loadSiteConfig();
-    var base = (cfg && cfg.worker && cfg.worker.base) ? String(cfg.worker.base).replace(/\/$/, '') : '';
-    return base;
-  }
-
-  async function getSupportHref(){
-    var cfg = await loadSiteConfig();
-    var invite = (cfg && cfg.discord && cfg.discord.invite) ? String(cfg.discord.invite) : 'https://discord.gg/xXru9PEFdg';
-    var guildId = (cfg && cfg.discord && cfg.discord.guild_id) ? String(cfg.discord.guild_id) : '';
-    var channelId = (cfg && cfg.discord && cfg.discord.support_channel_id) ? String(cfg.discord.support_channel_id) : '';
-    if(guildId && channelId){
-      return 'https://discord.com/channels/' + guildId + '/' + channelId;
-    }
-    return invite;
   }
 
   async function loadWorkerBase(){
@@ -111,8 +81,8 @@
     return Promise.resolve();
   }
 
-  async function renderOutput(targetEl, text, payload){
-    var supportHref = await getSupportHref();
+  // Render immediately so the UI always opens, even if config fetch is slow/hangs.
+  function renderOutput(targetEl, text, payload){
     targetEl.style.display = 'block';
     targetEl.innerHTML = [
       '<div class="result" style="cursor:default">',
@@ -130,15 +100,18 @@
 
     // Support link (channel deep-link when available, otherwise invite)
     var supportBtn = targetEl.querySelector('#supportBtn');
-    supportBtn.href = supportHref;
+    supportBtn.href = 'https://discord.gg/xXru9PEFdg';
     supportBtn.title = 'Opens the IRP Discord support channel. If you are not in the server yet, you may be prompted to join.';
+    // Update href asynchronously once config is loaded (non-blocking)
+    getSupportHref().then(function(href){
+      if(href) supportBtn.href = href;
+    }).catch(function(){});
 
     var msgEl = targetEl.querySelector('#submitMsg');
     var copyBtn = targetEl.querySelector('#copyBtn');
     copyBtn.addEventListener('click', function(){
       copyBtn.disabled = true;
       msgEl.style.display = 'block';
-<<<<<<< HEAD
       msgEl.textContent = 'Copying to clipboard…';
       copyToClipboard(text).then(function(){
         copyBtn.textContent = 'Copied';
@@ -147,12 +120,6 @@
         return submitToStaff(payload, msgEl);
       }).catch(function(){
         msgEl.textContent = 'Copy failed. Please manually select the text below and copy it, then use Open Discord Support.';
-=======
-      msgEl.textContent = 'Copying and submitting…';
-      copyToClipboard(text).then(function(){
-        copyBtn.textContent = 'Copied';
-        return submitToStaff(payload, msgEl, copyBtn);
->>>>>>> cf6df21edd996819cf33c516fa2531724a26b221
       }).finally(function(){
         copyBtn.disabled = false;
         setTimeout(function(){ copyBtn.textContent = 'Copy to Clipboard'; }, 1500);
@@ -164,11 +131,7 @@
     var base = await loadWorkerBase();
     if(!base){
       msgEl.style.display = 'block';
-<<<<<<< HEAD
       msgEl.textContent = 'Copied to clipboard. Auto-submit is not configured yet — please use Open Discord Support and submit via a ticket.';
-=======
-      msgEl.textContent = 'Submission is not configured yet. Please use Open Discord Support and submit via a ticket.';
->>>>>>> cf6df21edd996819cf33c516fa2531724a26b221
       return;
     }
     msgEl.style.display = 'block';
@@ -183,7 +146,6 @@
       // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
       var j = null;
       try { j = await r.json(); } catch(_) {}
-<<<<<<< HEAD
       var ok = !!r.ok;
       if(j && typeof j === 'object'){
         if(j.ok === true || j.success === true) ok = true;
@@ -194,12 +156,6 @@
       else msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
     }catch(e){
       msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
-=======
-      if(!r.ok || !j || j.ok !== true) msgEl.textContent = 'Submission failed. Please use Open Discord Support and submit via a ticket.';
-      else msgEl.textContent = 'Submitted to staff successfully.';
-    }catch(e){
-      msgEl.textContent = 'Submission failed. Please use Open Discord Support and submit via a ticket.';
->>>>>>> cf6df21edd996819cf33c516fa2531724a26b221
     }
   }
 
