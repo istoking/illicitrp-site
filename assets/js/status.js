@@ -10,6 +10,12 @@
 
   function fmt(n){ return (n===0 || n) ? String(n) : '—'; }
 
+  function stripFiveMCodes(str){
+    if(!str) return '';
+    return String(str).replace(/\^\d/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+
   async function fetchJson(url){
     var r = await fetch(url, { cache: 'no-store' });
     if(!r.ok) throw new Error('HTTP '+r.status);
@@ -40,11 +46,20 @@
     // Helper to render a nice line
     function renderLine(hostname, players, maxPlayers){
       if(!fivemMeta) return;
+
+      // Ensure the long details line always stays inside the card and scrolls horizontally when needed
+      if(!fivemMeta.classList.contains('status-details')){
+        fivemMeta.classList.add('status-details');
+      }
+
       var parts = [];
-      if(hostname) parts.push(hostname);
+      var cleanHost = stripFiveMCodes(hostname);
+      if(cleanHost) parts.push(cleanHost);
+
       if(players!==null && players!==undefined && maxPlayers!==null && maxPlayers!==undefined){
         parts.push(players + ' / ' + maxPlayers + ' players');
       }
+
       fivemMeta.textContent = parts.length ? parts.join(' • ') : 'Status is updated from status.json when available.';
     }
 
