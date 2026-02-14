@@ -615,3 +615,52 @@ a.item:hover, a.item:focus-visible,
   transform: none;
 }
 
+
+/* =========================================================
+   Applications form controls: dark theme dropdowns + readable disabled buttons
+   ========================================================= */
+
+select,
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea{
+  background: rgba(10, 12, 16, 0.85);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  outline: none;
+}
+
+select:focus,
+input:focus,
+textarea:focus{
+  border-color: rgba(220, 38, 38, 0.55);
+  box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.18);
+}
+
+/* Dropdown menu items (most browsers) */
+select option,
+select optgroup{
+  background-color: #0b0f14;
+  color: #ffffff;
+}
+
+/* Disabled buttons/links: keep text readable */
+button:disabled,
+.btn:disabled,
+.pill:disabled,
+button[aria-disabled="true"],
+.btn[aria-disabled="true"],
+.pill[aria-disabled="true"]{
+  opacity: 0.55;
+  color: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.12);
+}
+
+a.btn.disabled,
+a.pill.disabled{
+  opacity: 0.55;
+  color: rgba(255,255,255,0.85);
+  pointer-events: none;
+}
