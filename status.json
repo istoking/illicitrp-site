@@ -6,6 +6,9 @@
   "players": null,
   "max_players": null,
   "last_updated_utc": "2026-02-14T04:09:43Z",
+  "worker": {
+    "base": "https://irp-status.istok-cac.workers.dev"
+  },
   "fivem": {
     "cfx_join": "z5bz49"
   }

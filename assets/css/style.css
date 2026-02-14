@@ -706,7 +706,7 @@ a.pill.disabled{
 /* ===== Status page: long FiveM details line stays inside card ===== */
 .status-details{
   margin-top: 10px;
-  padding: 10px 12px;
+  padding: 12px 16px !important;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.10);
   background: rgba(10,12,16,0.55);
@@ -716,10 +716,10 @@ a.pill.disabled{
   overflow-y: hidden;
   white-space: nowrap;
   display: block;
-  padding-bottom: 6px;
   scrollbar-width: thin;
   scrollbar-color: rgba(220,38,38,0.55) rgba(255,255,255,0.06);
 }
+
 .status-details::-webkit-scrollbar{ height: 8px; }
 .status-details::-webkit-scrollbar-track{
   background: rgba(255,255,255,0.06);

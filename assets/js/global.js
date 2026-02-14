@@ -91,7 +91,8 @@
         nav.appendChild(document.createTextNode(' / '));
         accum += '/' + seg;
 
-        var label = titleCase(seg.replace(/[-_]+/g, ' '));
+        var cleanSeg = seg.replace(/\.html$/i, '');
+        var label = titleCase(cleanSeg.replace(/[-_]+/g, ' '));
         if(i === parts.length - 1){
           var span = document.createElement('span');
           span.textContent = label;

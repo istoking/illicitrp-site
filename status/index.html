@@ -109,15 +109,30 @@
         </div>
       </section>
 
-      <section class="card">
-        <div class="card-head">
-          <div class="kicker">Updates</div>
-          <h2 style="margin:6px 0 0;">Last refreshed</h2>
+      <section class="card" id="svc-discord">
+        <div class="card-head" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div>
+            <div class="kicker">Discord</div>
+            <h2 style="margin:6px 0 0;">Community</h2>
+          </div>
+          <span class="pill" data-pill="discord">Checking…</span>
         </div>
-        <p class="muted" id="status-updated">—</p>
-        <p class="muted" style="margin-top:10px;">If the server is restarting, status may briefly show offline.</p>
+        <p class="muted" id="discord-meta" style="margin-top:10px;">Fetching live counts…</p>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="pill" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Join Discord</a>
+        </div>
       </section>
     </div>
+
+    <section class="card" style="margin-top:16px;">
+      <div class="card-head">
+        <div class="kicker">Updates</div>
+        <h2 style="margin:6px 0 0;">Last refreshed</h2>
+      </div>
+      <p class="muted" id="status-updated">—</p>
+      <p class="muted" style="margin-top:10px;">If the server is restarting, status may briefly show offline.</p>
+    </section>
   </div>
 </main>
 

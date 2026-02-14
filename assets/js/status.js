@@ -12,7 +12,11 @@
 
   function stripFiveMCodes(str){
     if(!str) return '';
-    return String(str).replace(/\^\d/g, '').replace(/\s+/g, ' ').trim();
+    return String(str)
+      .replace(/\^\d/g, '')
+      .replace(/\s*\|\s*/g, ' • ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
 
@@ -26,6 +30,7 @@
     window.__irpStatusUpdatedAt = null;
     var fivemCard = qs('#svc-fivem');
     var fivemMeta = fivemCard ? qs('.muted', fivemCard) : null;
+    var discordMeta = qs('#discord-meta');
 
     // 1) Load local status.json (optional + used as fallback)
     var base = null;
@@ -42,6 +47,7 @@
     //  - fivem: { info_json: "https://<host>:<port>/info.json" }
     // If none configured, we fall back to base.players/max_players if present.
     var fivemCfg = base && base.fivem ? base.fivem : null;
+    var workerBase = base && base.worker && base.worker.base ? String(base.worker.base).replace(/\/$/, '') : null;
 
     // Helper to render a nice line
     function renderLine(hostname, players, maxPlayers){
@@ -64,6 +70,43 @@
     }
 
     // Attempt live fetch
+    // Prefer Worker API if configured (it can return both FiveM + Discord counts)
+    if(workerBase){
+      try{
+        var w = await fetchJson(workerBase + '/status');
+
+        // FiveM block
+        if(w && w.fivem && w.fivem.online){
+          setPill('fivem', 'ok', 'Online');
+          renderLine(w.fivem.name, w.fivem.players, w.fivem.maxPlayers);
+        } else {
+          setPill('fivem', 'bad', 'Offline');
+          renderLine(null, null, null);
+        }
+
+        // Discord block
+        if(w && w.discord && (w.discord.members || w.discord.online || w.discord.members === 0 || w.discord.online === 0)){
+          setPill('discord', 'ok', 'Online');
+          if(discordMeta){
+            var partsD = [];
+            if(w.discord.members || w.discord.members === 0) partsD.push('Members: ' + w.discord.members);
+            if(w.discord.online || w.discord.online === 0) partsD.push('Online: ' + w.discord.online);
+            discordMeta.textContent = partsD.length ? partsD.join(' • ') : 'Live counts unavailable.';
+          }
+        } else {
+          setPill('discord', 'warn', 'Unknown');
+          if(discordMeta) discordMeta.textContent = 'Live counts unavailable.';
+        }
+
+        window.__irpStatusUpdatedAt = w && w.updatedAt ? w.updatedAt : new Date().toISOString();
+        return;
+      }catch(e){
+        // Worker failed; fall back to direct FiveM fetch
+        setPill('discord', 'warn', 'Unknown');
+        if(discordMeta) discordMeta.textContent = 'Live counts unavailable.';
+      }
+    }
+
     if(fivemCfg && (fivemCfg.cfx_join || fivemCfg.dynamic_json || fivemCfg.info_json)){
       try{
         if(fivemCfg.cfx_join){
@@ -77,6 +120,10 @@
           setPill('fivem', 'ok', 'Online');
           renderLine(hostname, players, maxPlayers);
           window.__irpStatusUpdatedAt = new Date().toISOString();
+
+          // Discord pill may exist on the page; keep it neutral if we didn't load via worker
+          setPill('discord', 'warn', 'Unknown');
+          if(discordMeta) discordMeta.textContent = 'Connect Discord counts via the status worker.';
           return;
         }
 
