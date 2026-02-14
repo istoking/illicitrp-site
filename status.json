@@ -10,5 +10,3 @@
     "cfx_join": "z5bz49"
   }
 }
-
-const STATUS_ENDPOINT = "https://irp-status.istok-cac.workers.dev/status";
