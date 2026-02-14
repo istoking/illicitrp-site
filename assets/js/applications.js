@@ -81,6 +81,13 @@
     return Promise.resolve();
   }
 
+  function allFilled(values){
+    for(var i=0;i<values.length;i++){
+      if(!esc(values[i])) return false;
+    }
+    return true;
+  }
+
   // Render immediately so the UI always opens, even if config fetch is slow/hangs.
   function renderOutput(targetEl, text, payload){
     targetEl.style.display = 'block';
@@ -117,18 +124,18 @@
     function silentSubmitOnce(){
       if(!canAutoSubmit || submittedOnce) return;
       submittedOnce = true;
-      submitToStaff(payload).catch(function(){ /* silent */ });
+      submitToStaff(payload, text).catch(function(){ /* silent */ });
     }
 
     // Attempt staff logging once upon generation (silent).
     silentSubmitOnce();
+
     copyBtn.addEventListener('click', function(){
       copyBtn.disabled = true;
       msgEl.style.display = 'block';
       msgEl.textContent = 'Copying to clipboard…';
       copyToClipboard(text).then(function(){
         copyBtn.textContent = 'Copied';
-        // Applicant-facing UX: only confirm copy + next step.
         msgEl.textContent = 'Copied to clipboard. Open Discord Support and submit via a ticket.';
         // Staff logging: silent best-effort.
         silentSubmitOnce();
@@ -141,36 +148,59 @@
     });
   }
 
-  async function submitToStaff(payload){
-    var base = await loadWorkerBase();
+  async function submitToStaff(payload, submissionText){
+    var cfg = await loadSiteConfig();
+    var base = (cfg && cfg.worker && cfg.worker.base) ? String(cfg.worker.base).replace(/\/$/, '') : '';
     if(!base) return false;
 
-    try{
-      var r = await fetch(base + '/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
-      var j = null;
-      try { j = await r.json(); } catch(_) {}
-      var ok = !!r.ok;
-      if(j && typeof j === 'object'){
-        if(j.ok === true || j.success === true) ok = true;
-        else if('ok' in j || 'success' in j) ok = false;
+    // Allow overriding the submit path + optional key in status.json.
+    // Example:
+    // "worker": { "base": "https://...workers.dev", "apply_path": "/apply", "key": "..." }
+    var applyPath = (cfg && cfg.worker && cfg.worker.apply_path) ? String(cfg.worker.apply_path) : '';
+    var paths = [];
+    if(applyPath){
+      paths.push(applyPath.startsWith('/') ? applyPath : '/' + applyPath);
+    }
+    // Try common routes for backwards compatibility.
+    ['/apply','/applications','/application','/submit','/submit-application','/log/applications','/log','/webhook/apply'].forEach(function(p){
+      if(paths.indexOf(p) === -1) paths.push(p);
+    });
+
+    var headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+    var key = (cfg && cfg.worker && (cfg.worker.key || cfg.worker.apply_key)) ? String(cfg.worker.key || cfg.worker.apply_key) : '';
+    if(key) headers['X-IRP-Key'] = key;
+
+    // Send a flexible payload shape so different Workers can consume it.
+    var bodyObj = {
+      type: payload && payload.type ? payload.type : 'Application',
+      submission_text: submissionText || '',
+      content: submissionText || '',
+      payload: payload || {}
+    };
+
+    for(var i=0;i<paths.length;i++){
+      try{
+        var r = await fetch(base + paths[i], {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(bodyObj)
+        });
+
+        // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
+        var j = null;
+        try { j = await r.json(); } catch(_) {}
+        var ok = !!r.ok;
+        if(j && typeof j === 'object'){
+          if(j.ok === true || j.success === true) ok = true;
+          else if('ok' in j || 'success' in j) ok = false;
+        }
+
+        if(ok) return true;
+      }catch(e){
+        // try next path
       }
-
-      return ok;
-    }catch(e){
-      return false;
     }
-  }
-
-  function allFilled(values){
-    for(var i=0;i<values.length;i++){
-      if(!esc(values[i])) return false;
-    }
-    return true;
+    return false;
   }
 
   function initJoin(){
@@ -192,6 +222,7 @@
         document.getElementById('q_final').value
       ];
       var canAutoSubmit = allFilled(required);
+
       var fields = [
         {label:'Discord', value:esc(document.getElementById('a_discord').value)},
         {label:'Timezone', value:esc(document.getElementById('a_tz').value)},
@@ -224,7 +255,6 @@
         final_note: esc(document.getElementById('q_final').value)
       };
 
-      // Internal flag to control staff logging behavior.
       payload.__can_auto_submit = canAutoSubmit;
 
       renderOutput(out, text, payload);
@@ -246,6 +276,7 @@
         document.getElementById('w_avail').value
       ];
       var canAutoSubmit = allFilled(required);
+
       var fields = [
         {label:'Discord', value:esc(document.getElementById('w_discord').value)},
         {label:'Role', value:esc(document.getElementById('w_role').value)},
@@ -270,7 +301,6 @@
         availability: esc(document.getElementById('w_avail').value)
       };
 
-      // Internal flag to control staff logging behavior.
       payload.__can_auto_submit = canAutoSubmit;
 
       renderOutput(out, text, payload);
