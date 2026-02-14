@@ -123,6 +123,10 @@
 
     var msgEl = targetEl.querySelector('#submitMsg');
     var copyBtn = targetEl.querySelector('#copyBtn');
+
+    // Per-render guard so the same generated submission only attempts staff logging once.
+    // (Generate already attempts staff logging; Copy should not duplicate it.)
+    var staffLoggedThisRender = false;
     copyBtn.addEventListener('click', function(){
       copyBtn.disabled = true;
       msgEl.style.display = 'block';
@@ -133,7 +137,8 @@
         msgEl.textContent = 'Copied to clipboard. Open Discord Support and submit via a ticket.';
 
         // Silent staff logging (only when the user completed every field)
-        if(allFieldsFilled(payload)){
+        if(!staffLoggedThisRender && allFieldsFilled(payload)){
+          staffLoggedThisRender = true;
           submitToStaff(payload).catch(function(){});
         }
       }).catch(function(){
@@ -146,6 +151,30 @@
   }
 
   async function submitToStaff(payload){
+    // Client-side spam guard: prevents accidental double posts and rapid-click spam.
+    // NOTE: This is not a security boundary; the Worker should still enforce real limits.
+    try{
+      var now = Date.now();
+      var key = 'irp_stafflog_last';
+      var lastRaw = localStorage.getItem(key);
+      if(lastRaw){
+        var last = JSON.parse(lastRaw);
+        var COOLDOWN = 60 * 1000; // 60 seconds
+        if(last && last.t && (now - last.t) < COOLDOWN){
+          if(last.d === (payload && payload.discord) && last.type === (payload && payload.type)){
+            return;
+          }
+        }
+      }
+      localStorage.setItem(key, JSON.stringify({
+        t: now,
+        d: payload && payload.discord ? String(payload.discord) : '',
+        type: payload && payload.type ? String(payload.type) : ''
+      }));
+    }catch(_){
+      // ignore storage errors
+    }
+
     var base = await loadWorkerBase();
     if(!base) return;
 
