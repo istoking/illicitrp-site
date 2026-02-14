@@ -37,33 +37,11 @@
     // If none configured, we fall back to base.players/max_players if present.
     var fivemCfg = base && base.fivem ? base.fivem : null;
 
-    
-    function sanitizeHostname(hostname){
-      if(!hostname) return '';
-      var h = String(hostname);
-
-      // Remove FiveM color codes like ^1 ^0 etc
-      h = h.replace(/\^\d+/g, '');
-
-      // Normalize separators
-      h = h.replace(/\s*\|\s*/g, ' | ');
-      h = h.replace(/\s+/g, ' ').trim();
-
-      // Prefer first few segments to keep it clean (no ellipsis)
-      var segs = h.split('|').map(function(s){ return s.trim(); }).filter(Boolean);
-      if(segs.length > 0){
-        segs = segs.slice(0, 5);
-        h = segs.join(' • ');
-      }
-
-      return h.trim();
-    }
-
-// Helper to render a nice line
+    // Helper to render a nice line
     function renderLine(hostname, players, maxPlayers){
       if(!fivemMeta) return;
       var parts = [];
-      if(hostname) parts.push(sanitizeHostname(hostname));
+      if(hostname) parts.push(hostname);
       if(players!==null && players!==undefined && maxPlayers!==null && maxPlayers!==undefined){
         parts.push(players + ' / ' + maxPlayers + ' players');
       }

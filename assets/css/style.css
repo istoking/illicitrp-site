@@ -675,3 +675,29 @@ a.pill.disabled{
   color: rgba(255,255,255,0.92);
   pointer-events: none;
 }
+
+
+/* ===== Status page: keep long server description inside card ===== */
+#svc-fivem .muted{
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  display: block;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+#svc-fivem .muted::-webkit-scrollbar{
+  height: 8px;
+}
+#svc-fivem .muted::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+}
+#svc-fivem .muted::-webkit-scrollbar-thumb{
+  background: rgba(220,38,38,0.35);
+  border-radius: 999px;
+}
+#svc-fivem .muted::-webkit-scrollbar-thumb:hover{
+  background: rgba(220,38,38,0.55);
+}
