@@ -63,52 +63,7 @@
     });
   }
 
-  
-  // -------- Breadcrumbs --------
-  function titleCase(str){
-    return (str||'').split(' ').filter(Boolean).map(function(w){
-      return w.charAt(0).toUpperCase() + w.slice(1);
-    }).join(' ');
-  }
-
-  function enhanceBreadcrumbs(){
-    qsa('.breadcrumb').forEach(function(el){
-      // Preserve existing class styling but make it clickable based on URL path.
-      var path = (window.location.pathname || '/').replace(/\/+$/, '');
-      var parts = path.split('/').filter(Boolean);
-
-      var nav = document.createElement('nav');
-      nav.className = el.className; // keep same styling
-      nav.setAttribute('aria-label', 'Breadcrumb');
-
-      var home = document.createElement('a');
-      home.href = '/';
-      home.textContent = 'Home';
-      nav.appendChild(home);
-
-      var accum = '';
-      parts.forEach(function(seg, i){
-        nav.appendChild(document.createTextNode(' / '));
-        accum += '/' + seg;
-
-        var label = titleCase(seg.replace(/[-_]+/g, ' '));
-        if(i === parts.length - 1){
-          var span = document.createElement('span');
-          span.textContent = label;
-          nav.appendChild(span);
-        }else{
-          var a = document.createElement('a');
-          a.href = accum + '/';
-          a.textContent = label;
-          nav.appendChild(a);
-        }
-      });
-
-      el.replaceWith(nav);
-    });
-  }
-
-// -------- Global Search --------
+  // -------- Global Search --------
   function injectSearchButton(){
     // Try to place in header nav if present, otherwise float button
     var nav = qs('nav.nav') || qs('nav');
@@ -246,11 +201,10 @@
   }
 
   function init(){
-    // Status banner disabled (was /status.json driven)
+    injectStatusBanner();
     injectSearchButton();
     createSearchModal();
     wireSearch();
-    enhanceBreadcrumbs();
   }
 
   if(document.readyState === 'loading'){
