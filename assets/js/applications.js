@@ -87,7 +87,7 @@
     targetEl.innerHTML = [
       '<div class="result" style="cursor:default">',
         '<strong>Submission generated</strong>',
-        '<span>Copy to clipboard will also submit your application to staff.</span>',
+        '<span>Copy to clipboard, then open Discord Support and submit via a ticket.</span>',
         '<div class="actions" style="margin-top:12px">',
           '<button class="btn primary" id="copyBtn">Copy to Clipboard</button>',
           '<a class="btn" id="supportBtn" target="_blank" rel="noopener">Open Discord Support</a>',
@@ -109,15 +109,29 @@
 
     var msgEl = targetEl.querySelector('#submitMsg');
     var copyBtn = targetEl.querySelector('#copyBtn');
+
+    // Auto-submit is for staff logging only. It should be silent and only run
+    // when the applicant has filled out every field.
+    var canAutoSubmit = !!(payload && payload.__can_auto_submit);
+    var submittedOnce = false;
+    function silentSubmitOnce(){
+      if(!canAutoSubmit || submittedOnce) return;
+      submittedOnce = true;
+      submitToStaff(payload).catch(function(){ /* silent */ });
+    }
+
+    // Attempt staff logging once upon generation (silent).
+    silentSubmitOnce();
     copyBtn.addEventListener('click', function(){
       copyBtn.disabled = true;
       msgEl.style.display = 'block';
       msgEl.textContent = 'Copying to clipboard…';
       copyToClipboard(text).then(function(){
         copyBtn.textContent = 'Copied';
-        // Clipboard success should not be treated as a submission failure.
-        msgEl.textContent = 'Copied to clipboard. Submitting to staff…';
-        return submitToStaff(payload, msgEl);
+        // Applicant-facing UX: only confirm copy + next step.
+        msgEl.textContent = 'Copied to clipboard. Open Discord Support and submit via a ticket.';
+        // Staff logging: silent best-effort.
+        silentSubmitOnce();
       }).catch(function(){
         msgEl.textContent = 'Copy failed. Please manually select the text below and copy it, then use Open Discord Support.';
       }).finally(function(){
@@ -127,15 +141,9 @@
     });
   }
 
-  async function submitToStaff(payload, msgEl){
+  async function submitToStaff(payload){
     var base = await loadWorkerBase();
-    if(!base){
-      msgEl.style.display = 'block';
-      msgEl.textContent = 'Copied to clipboard. Auto-submit is not configured yet — please use Open Discord Support and submit via a ticket.';
-      return;
-    }
-    msgEl.style.display = 'block';
-    msgEl.textContent = 'Submitting to staff…';
+    if(!base) return false;
 
     try{
       var r = await fetch(base + '/apply', {
@@ -152,17 +160,38 @@
         else if('ok' in j || 'success' in j) ok = false;
       }
 
-      if(ok) msgEl.textContent = 'Copied to clipboard. Submitted to staff successfully.';
-      else msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
+      return ok;
     }catch(e){
-      msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
+      return false;
     }
+  }
+
+  function allFilled(values){
+    for(var i=0;i<values.length;i++){
+      if(!esc(values[i])) return false;
+    }
+    return true;
   }
 
   function initJoin(){
     var btn = document.getElementById('appBuild');
     if(!btn) return;
     btn.addEventListener('click', function(){
+      var required = [
+        document.getElementById('a_name') ? document.getElementById('a_name').value : '',
+        document.getElementById('a_discord').value,
+        document.getElementById('a_tz').value,
+        document.getElementById('a_age').value,
+        document.getElementById('a_exp').value,
+        document.getElementById('q_char').value,
+        document.getElementById('q_loss').value,
+        document.getElementById('q_escalation').value,
+        document.getElementById('q_mech').value,
+        document.getElementById('q_account').value,
+        document.getElementById('q_staff').value,
+        document.getElementById('q_final').value
+      ];
+      var canAutoSubmit = allFilled(required);
       var fields = [
         {label:'Discord', value:esc(document.getElementById('a_discord').value)},
         {label:'Timezone', value:esc(document.getElementById('a_tz').value)},
@@ -195,6 +224,9 @@
         final_note: esc(document.getElementById('q_final').value)
       };
 
+      // Internal flag to control staff logging behavior.
+      payload.__can_auto_submit = canAutoSubmit;
+
       renderOutput(out, text, payload);
     });
   }
@@ -203,6 +235,17 @@
     var btn = document.getElementById('wlBuild');
     if(!btn) return;
     btn.addEventListener('click', function(){
+      var required = [
+        document.getElementById('w_name') ? document.getElementById('w_name').value : '',
+        document.getElementById('w_discord').value,
+        document.getElementById('w_role').value,
+        document.getElementById('w_why').value,
+        document.getElementById('w_pressure').value,
+        document.getElementById('w_neutral').value,
+        document.getElementById('w_knowledge').value,
+        document.getElementById('w_avail').value
+      ];
+      var canAutoSubmit = allFilled(required);
       var fields = [
         {label:'Discord', value:esc(document.getElementById('w_discord').value)},
         {label:'Role', value:esc(document.getElementById('w_role').value)},
@@ -226,6 +269,9 @@
         knowledge_check: esc(document.getElementById('w_knowledge').value),
         availability: esc(document.getElementById('w_avail').value)
       };
+
+      // Internal flag to control staff logging behavior.
+      payload.__can_auto_submit = canAutoSubmit;
 
       renderOutput(out, text, payload);
     });
