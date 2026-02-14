@@ -17,6 +17,7 @@
   }
 
   async function load(){
+    window.__irpStatusUpdatedAt = null;
     var fivemCard = qs('#svc-fivem');
     var fivemMeta = fivemCard ? qs('.muted', fivemCard) : null;
 
@@ -60,6 +61,7 @@
 
           setPill('fivem', 'ok', 'Online');
           renderLine(hostname, players, maxPlayers);
+          window.__irpStatusUpdatedAt = new Date().toISOString();
           return;
         }
 
@@ -85,6 +87,7 @@
         }
       }catch(e){
         setPill('fivem', 'bad', 'Offline');
+        window.__irpStatusUpdatedAt = new Date().toISOString();
         renderLine(null, null, null);
         return;
       }

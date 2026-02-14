@@ -1,14 +1,149 @@
-{
-  "server_name": "Illicit Roleplay (IRP)",
-  "environment": "Production",
-  "status": "unknown",
-  "message": "Welcome to IRP. Status updates will appear here.",
-  "players": null,
-  "max_players": null,
-  "last_updated_utc": "2026-02-13T03:21:16Z",
-  "fivem": {
-    "cfx_join": null,
-    "dynamic_json": null,
-    "info_json": null
-  }
-}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>IRP Status</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+</head>
+<body>
+
+<header class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo.png" alt="Illicit Roleplay logo" />
+        <div>
+          <div class="title">Illicit Roleplay</div>
+          <div class="sub">IRP • Serious RP</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+<div class="nav-panel" id="navPanel">
+<div class="dropdown">
+          <details>
+            <summary class="pill">SOPs</summary>
+            <div class="dropdown-menu">
+              <a href="/sops/">
+                SOP Library <span>• all SOPs</span>
+              </a>
+              <a href="/sops/civilian.html">
+                Civilian SOP <span>• IC conduct</span>
+              </a>
+              <a href="/sops/gang.html">
+                Gang SOP <span>• escalation</span>
+              </a>
+              <a href="/sops/leo-ems.html">
+                LEO / EMS SOP <span>• professionalism</span>
+              </a>
+              <a href="/sops/staff-admin.html">
+                Staff / Admin SOP <span>• tickets</span>
+              </a>
+            </div>
+          </details>
+        </div>
+        <a class="pill" href="/docs/">Docs</a>
+        <a class="pill" href="/applications/">Applications</a>
+<div class="dropdown">
+          <details>
+            <summary class="pill">Community</summary>
+            <div class="dropdown-menu">
+              <a href="/handbook/">
+                Handbook <span>• rules and reporting</span>
+              </a>
+              <a href="/changelog/">
+                Changelog <span>• updates and patches</span>
+              </a>
+              <a href="/announcements/">
+                Announcements <span>• staff posts</span>
+              </a>
+              <a href="/status/">
+                Status <span>• live services</span>
+              </a>
+            </div>
+          </details>
+        </div>
+        <a class="pill" href="/downloads/">Downloads</a>
+        <a class="pill" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
+</div>
+</nav>
+    </div>
+  </div>
+</header>
+<main class="page">
+  <div class="container">
+    <div class="breadcrumb">Home / Status</div>
+
+    <div class="page-head">
+      <h1>Status</h1>
+      <p class="muted">Live server availability and player count.</p>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <section class="card" id="svc-fivem">
+        <div class="card-head" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div>
+            <div class="kicker">FiveM</div>
+            <h2 style="margin:6px 0 0;">Illicit Roleplay (IRP)</h2>
+          </div>
+          <span class="pill" data-pill="fivem">Checking…</span>
+        </div>
+        <p class="muted" style="margin-top:10px;">Fetching live status…</p>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="pill" href="https://cfx.re/join/z5bz49" target="_blank" rel="noopener">Join Server</a>
+          <a class="pill" href="https://status.cfx.re/" target="_blank" rel="noopener">Cfx.re Status</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div class="kicker">Updates</div>
+          <h2 style="margin:6px 0 0;">Last refreshed</h2>
+        </div>
+        <p class="muted" id="status-updated">—</p>
+        <p class="muted" style="margin-top:10px;">If the server is restarting, status may briefly show offline.</p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages / Cloudflare Pages.</div>
+</footer>
+
+<script src="/assets/js/global.js"></script>
+<script src="/assets/js/status.js"></script>
+<script>
+  // Update "Last refreshed" line from status.js payload (it sets updatedAt)
+  (function(){
+    const el = document.getElementById('status-updated');
+    if(!el) return;
+    // status.js sets window.__irpStatusUpdatedAt when it loads
+    const tick = () => {
+      const v = window.__irpStatusUpdatedAt;
+      if(!v) return;
+      try {
+        const d = new Date(v);
+        el.textContent = isNaN(d.getTime()) ? v : d.toUTCString();
+      } catch(_) {}
+    };
+    setInterval(tick, 500);
+    tick();
+  })();
+</script>
+</body>
+</html>

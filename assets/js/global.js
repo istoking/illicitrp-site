@@ -98,7 +98,7 @@
           nav.appendChild(span);
         }else{
           var a = document.createElement('a');
-          a.href = accum + '/';
+                    a.href = seg.toLowerCase().endsWith('.html') ? accum : (accum + '/');
           a.textContent = label;
           nav.appendChild(a);
         }
