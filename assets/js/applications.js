@@ -66,20 +66,6 @@
     return out.join('\n');
   }
 
-  function allFieldsFilled(payload){
-    // Only attempt silent staff logging when every field has been filled out.
-    // (Players should never see submit failures.)
-    if(!payload || typeof payload !== 'object') return false;
-    for (var k in payload){
-      if(!Object.prototype.hasOwnProperty.call(payload, k)) continue;
-      if(k === 'type') continue;
-      var v = payload[k];
-      if(v === null || v === undefined) return false;
-      if(String(v).trim().length === 0) return false;
-    }
-    return true;
-  }
-
   function copyToClipboard(text){
     if(navigator.clipboard && navigator.clipboard.writeText){
       return navigator.clipboard.writeText(text);
@@ -101,7 +87,7 @@
     targetEl.innerHTML = [
       '<div class="result" style="cursor:default">',
         '<strong>Submission generated</strong>',
-        '<span>Copy the submission, then open a Discord support ticket and paste it.</span>',
+        '<span>Copy to clipboard will also submit your application to staff.</span>',
         '<div class="actions" style="margin-top:12px">',
           '<button class="btn primary" id="copyBtn">Copy to Clipboard</button>',
           '<a class="btn" id="supportBtn" target="_blank" rel="noopener">Open Discord Support</a>',
@@ -123,24 +109,15 @@
 
     var msgEl = targetEl.querySelector('#submitMsg');
     var copyBtn = targetEl.querySelector('#copyBtn');
-
-    // Per-render guard so the same generated submission only attempts staff logging once.
-    // (Generate already attempts staff logging; Copy should not duplicate it.)
-    var staffLoggedThisRender = false;
     copyBtn.addEventListener('click', function(){
       copyBtn.disabled = true;
       msgEl.style.display = 'block';
       msgEl.textContent = 'Copying to clipboard…';
       copyToClipboard(text).then(function(){
         copyBtn.textContent = 'Copied';
-        // Player-facing message should never mention auto-submit.
-        msgEl.textContent = 'Copied to clipboard. Open Discord Support and submit via a ticket.';
-
-        // Silent staff logging (only when the user completed every field)
-        if(!staffLoggedThisRender && allFieldsFilled(payload)){
-          staffLoggedThisRender = true;
-          submitToStaff(payload).catch(function(){});
-        }
+        // Clipboard success should not be treated as a submission failure.
+        msgEl.textContent = 'Copied to clipboard. Submitting to staff…';
+        return submitToStaff(payload, msgEl);
       }).catch(function(){
         msgEl.textContent = 'Copy failed. Please manually select the text below and copy it, then use Open Discord Support.';
       }).finally(function(){
@@ -150,33 +127,15 @@
     });
   }
 
-  async function submitToStaff(payload){
-    // Client-side spam guard: prevents accidental double posts and rapid-click spam.
-    // NOTE: This is not a security boundary; the Worker should still enforce real limits.
-    try{
-      var now = Date.now();
-      var key = 'irp_stafflog_last';
-      var lastRaw = localStorage.getItem(key);
-      if(lastRaw){
-        var last = JSON.parse(lastRaw);
-        var COOLDOWN = 60 * 1000; // 60 seconds
-        if(last && last.t && (now - last.t) < COOLDOWN){
-          if(last.d === (payload && payload.discord) && last.type === (payload && payload.type)){
-            return;
-          }
-        }
-      }
-      localStorage.setItem(key, JSON.stringify({
-        t: now,
-        d: payload && payload.discord ? String(payload.discord) : '',
-        type: payload && payload.type ? String(payload.type) : ''
-      }));
-    }catch(_){
-      // ignore storage errors
-    }
-
+  async function submitToStaff(payload, msgEl){
     var base = await loadWorkerBase();
-    if(!base) return;
+    if(!base){
+      msgEl.style.display = 'block';
+      msgEl.textContent = 'Copied to clipboard. Auto-submit is not configured yet — please use Open Discord Support and submit via a ticket.';
+      return;
+    }
+    msgEl.style.display = 'block';
+    msgEl.textContent = 'Submitting to staff…';
 
     try{
       var r = await fetch(base + '/apply', {
@@ -184,12 +143,19 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      // Swallow errors silently (admin logging only)
-      if(!r.ok) return;
-      // If worker returns JSON, still allow it to be read (but ignored)
-      try { await r.json(); } catch(_) {}
+      // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
+      var j = null;
+      try { j = await r.json(); } catch(_) {}
+      var ok = !!r.ok;
+      if(j && typeof j === 'object'){
+        if(j.ok === true || j.success === true) ok = true;
+        else if('ok' in j || 'success' in j) ok = false;
+      }
+
+      if(ok) msgEl.textContent = 'Copied to clipboard. Submitted to staff successfully.';
+      else msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
     }catch(e){
-      // silent
+      msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
     }
   }
 
@@ -215,6 +181,7 @@
 
       var payload = {
         type: 'Join Application',
+        name: esc(document.getElementById('a_name') ? document.getElementById('a_name').value : ''),
         discord: esc(document.getElementById('a_discord').value),
         timezone: esc(document.getElementById('a_tz').value),
         age_bracket: esc(document.getElementById('a_age').value),
@@ -228,15 +195,7 @@
         final_note: esc(document.getElementById('q_final').value)
       };
 
-      // Worker requires a name + discord. This form doesn't ask for a separate name, so use Discord as name.
-      payload.name = payload.discord;
-
       renderOutput(out, text, payload);
-
-      // Silent staff logging on generate (only when all fields filled)
-      if(allFieldsFilled(payload)){
-        submitToStaff(payload).catch(function(){});
-      }
     });
   }
 
@@ -258,6 +217,7 @@
 
       var payload = {
         type: 'Whitelist Application',
+        name: esc(document.getElementById('w_name') ? document.getElementById('w_name').value : ''),
         discord: esc(document.getElementById('w_discord').value),
         role: esc(document.getElementById('w_role').value),
         why_this_role: esc(document.getElementById('w_why').value),
@@ -267,15 +227,7 @@
         availability: esc(document.getElementById('w_avail').value)
       };
 
-      // Worker requires a name + discord. This form doesn't ask for a separate name, so use Discord as name.
-      payload.name = payload.discord;
-
       renderOutput(out, text, payload);
-
-      // Silent staff logging on generate (only when all fields filled)
-      if(allFieldsFilled(payload)){
-        submitToStaff(payload).catch(function(){});
-      }
     });
   }
 
