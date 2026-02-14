@@ -66,6 +66,20 @@
     return out.join('\n');
   }
 
+  function allFieldsFilled(payload){
+    // Only attempt silent staff logging when every field has been filled out.
+    // (Players should never see submit failures.)
+    if(!payload || typeof payload !== 'object') return false;
+    for (var k in payload){
+      if(!Object.prototype.hasOwnProperty.call(payload, k)) continue;
+      if(k === 'type') continue;
+      var v = payload[k];
+      if(v === null || v === undefined) return false;
+      if(String(v).trim().length === 0) return false;
+    }
+    return true;
+  }
+
   function copyToClipboard(text){
     if(navigator.clipboard && navigator.clipboard.writeText){
       return navigator.clipboard.writeText(text);
@@ -81,20 +95,13 @@
     return Promise.resolve();
   }
 
-  function allFilled(values){
-    for(var i=0;i<values.length;i++){
-      if(!esc(values[i])) return false;
-    }
-    return true;
-  }
-
   // Render immediately so the UI always opens, even if config fetch is slow/hangs.
   function renderOutput(targetEl, text, payload){
     targetEl.style.display = 'block';
     targetEl.innerHTML = [
       '<div class="result" style="cursor:default">',
         '<strong>Submission generated</strong>',
-        '<span>Copy to clipboard, then open Discord Support and submit via a ticket.</span>',
+        '<span>Copy the submission, then open a Discord support ticket and paste it.</span>',
         '<div class="actions" style="margin-top:12px">',
           '<button class="btn primary" id="copyBtn">Copy to Clipboard</button>',
           '<a class="btn" id="supportBtn" target="_blank" rel="noopener">Open Discord Support</a>',
@@ -116,29 +123,19 @@
 
     var msgEl = targetEl.querySelector('#submitMsg');
     var copyBtn = targetEl.querySelector('#copyBtn');
-
-    // Auto-submit is for staff logging only. It should be silent and only run
-    // when the applicant has filled out every field.
-    var canAutoSubmit = !!(payload && payload.__can_auto_submit);
-    var submittedOnce = false;
-    function silentSubmitOnce(){
-      if(!canAutoSubmit || submittedOnce) return;
-      submittedOnce = true;
-      submitToStaff(payload, text).catch(function(){ /* silent */ });
-    }
-
-    // Attempt staff logging once upon generation (silent).
-    silentSubmitOnce();
-
     copyBtn.addEventListener('click', function(){
       copyBtn.disabled = true;
       msgEl.style.display = 'block';
       msgEl.textContent = 'Copying to clipboard…';
       copyToClipboard(text).then(function(){
         copyBtn.textContent = 'Copied';
+        // Player-facing message should never mention auto-submit.
         msgEl.textContent = 'Copied to clipboard. Open Discord Support and submit via a ticket.';
-        // Staff logging: silent best-effort.
-        silentSubmitOnce();
+
+        // Silent staff logging (only when the user completed every field)
+        if(allFieldsFilled(payload)){
+          submitToStaff(payload).catch(function(){});
+        }
       }).catch(function(){
         msgEl.textContent = 'Copy failed. Please manually select the text below and copy it, then use Open Discord Support.';
       }).finally(function(){
@@ -148,81 +145,29 @@
     });
   }
 
-  async function submitToStaff(payload, submissionText){
-    var cfg = await loadSiteConfig();
-    var base = (cfg && cfg.worker && cfg.worker.base) ? String(cfg.worker.base).replace(/\/$/, '') : '';
-    if(!base) return false;
+  async function submitToStaff(payload){
+    var base = await loadWorkerBase();
+    if(!base) return;
 
-    // Allow overriding the submit path + optional key in status.json.
-    // Example:
-    // "worker": { "base": "https://...workers.dev", "apply_path": "/apply", "key": "..." }
-    var applyPath = (cfg && cfg.worker && cfg.worker.apply_path) ? String(cfg.worker.apply_path) : '';
-    var paths = [];
-    if(applyPath){
-      paths.push(applyPath.startsWith('/') ? applyPath : '/' + applyPath);
+    try{
+      var r = await fetch(base + '/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      // Swallow errors silently (admin logging only)
+      if(!r.ok) return;
+      // If worker returns JSON, still allow it to be read (but ignored)
+      try { await r.json(); } catch(_) {}
+    }catch(e){
+      // silent
     }
-    // Try common routes for backwards compatibility.
-    ['/apply','/applications','/application','/submit','/submit-application','/log/applications','/log','/webhook/apply'].forEach(function(p){
-      if(paths.indexOf(p) === -1) paths.push(p);
-    });
-
-    var headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
-    var key = (cfg && cfg.worker && (cfg.worker.key || cfg.worker.apply_key)) ? String(cfg.worker.key || cfg.worker.apply_key) : '';
-    if(key) headers['X-IRP-Key'] = key;
-
-    // Send a flexible payload shape so different Workers can consume it.
-    var bodyObj = {
-      type: payload && payload.type ? payload.type : 'Application',
-      submission_text: submissionText || '',
-      content: submissionText || '',
-      payload: payload || {}
-    };
-
-    for(var i=0;i<paths.length;i++){
-      try{
-        var r = await fetch(base + paths[i], {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify(bodyObj)
-        });
-
-        // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
-        var j = null;
-        try { j = await r.json(); } catch(_) {}
-        var ok = !!r.ok;
-        if(j && typeof j === 'object'){
-          if(j.ok === true || j.success === true) ok = true;
-          else if('ok' in j || 'success' in j) ok = false;
-        }
-
-        if(ok) return true;
-      }catch(e){
-        // try next path
-      }
-    }
-    return false;
   }
 
   function initJoin(){
     var btn = document.getElementById('appBuild');
     if(!btn) return;
     btn.addEventListener('click', function(){
-      var required = [
-        document.getElementById('a_name') ? document.getElementById('a_name').value : '',
-        document.getElementById('a_discord').value,
-        document.getElementById('a_tz').value,
-        document.getElementById('a_age').value,
-        document.getElementById('a_exp').value,
-        document.getElementById('q_char').value,
-        document.getElementById('q_loss').value,
-        document.getElementById('q_escalation').value,
-        document.getElementById('q_mech').value,
-        document.getElementById('q_account').value,
-        document.getElementById('q_staff').value,
-        document.getElementById('q_final').value
-      ];
-      var canAutoSubmit = allFilled(required);
-
       var fields = [
         {label:'Discord', value:esc(document.getElementById('a_discord').value)},
         {label:'Timezone', value:esc(document.getElementById('a_tz').value)},
@@ -241,7 +186,6 @@
 
       var payload = {
         type: 'Join Application',
-        name: esc(document.getElementById('a_name') ? document.getElementById('a_name').value : ''),
         discord: esc(document.getElementById('a_discord').value),
         timezone: esc(document.getElementById('a_tz').value),
         age_bracket: esc(document.getElementById('a_age').value),
@@ -255,9 +199,15 @@
         final_note: esc(document.getElementById('q_final').value)
       };
 
-      payload.__can_auto_submit = canAutoSubmit;
+      // Worker requires a name + discord. This form doesn't ask for a separate name, so use Discord as name.
+      payload.name = payload.discord;
 
       renderOutput(out, text, payload);
+
+      // Silent staff logging on generate (only when all fields filled)
+      if(allFieldsFilled(payload)){
+        submitToStaff(payload).catch(function(){});
+      }
     });
   }
 
@@ -265,18 +215,6 @@
     var btn = document.getElementById('wlBuild');
     if(!btn) return;
     btn.addEventListener('click', function(){
-      var required = [
-        document.getElementById('w_name') ? document.getElementById('w_name').value : '',
-        document.getElementById('w_discord').value,
-        document.getElementById('w_role').value,
-        document.getElementById('w_why').value,
-        document.getElementById('w_pressure').value,
-        document.getElementById('w_neutral').value,
-        document.getElementById('w_knowledge').value,
-        document.getElementById('w_avail').value
-      ];
-      var canAutoSubmit = allFilled(required);
-
       var fields = [
         {label:'Discord', value:esc(document.getElementById('w_discord').value)},
         {label:'Role', value:esc(document.getElementById('w_role').value)},
@@ -291,7 +229,6 @@
 
       var payload = {
         type: 'Whitelist Application',
-        name: esc(document.getElementById('w_name') ? document.getElementById('w_name').value : ''),
         discord: esc(document.getElementById('w_discord').value),
         role: esc(document.getElementById('w_role').value),
         why_this_role: esc(document.getElementById('w_why').value),
@@ -301,9 +238,15 @@
         availability: esc(document.getElementById('w_avail').value)
       };
 
-      payload.__can_auto_submit = canAutoSubmit;
+      // Worker requires a name + discord. This form doesn't ask for a separate name, so use Discord as name.
+      payload.name = payload.discord;
 
       renderOutput(out, text, payload);
+
+      // Silent staff logging on generate (only when all fields filled)
+      if(allFieldsFilled(payload)){
+        submitToStaff(payload).catch(function(){});
+      }
     });
   }
 
