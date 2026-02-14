@@ -646,6 +646,14 @@ select optgroup{
   color: #ffffff;
 }
 
+/* Option highlight (best-effort; supported well in Firefox/Chromium) */
+select option:hover,
+select option:checked,
+select option:focus{
+  background: rgba(255,45,45,.20);
+  color: #fff;
+}
+
 /* Disabled buttons/links: keep text readable */
 button:disabled,
 .btn:disabled,
@@ -653,14 +661,17 @@ button:disabled,
 button[aria-disabled="true"],
 .btn[aria-disabled="true"],
 .pill[aria-disabled="true"]{
-  opacity: 0.55;
-  color: rgba(255,255,255,0.85);
+  /* Keep a clear, readable disabled state without looking "broken" */
+  opacity: 0.70;
+  color: rgba(255,255,255,0.92);
   border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,.03);
+  box-shadow: none;
 }
 
 a.btn.disabled,
 a.pill.disabled{
-  opacity: 0.55;
-  color: rgba(255,255,255,0.85);
+  opacity: 0.70;
+  color: rgba(255,255,255,0.92);
   pointer-events: none;
 }
