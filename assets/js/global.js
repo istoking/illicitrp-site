@@ -2,6 +2,20 @@
   function qs(sel, root){ return (root||document).querySelector(sel); }
   function qsa(sel, root){ return Array.from((root||document).querySelectorAll(sel)); }
 
+  // -------- Support Links --------
+  function updateSupportLinks(){
+    fetch('/status.json', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(cfg){
+      var invite = (cfg && cfg.discord && cfg.discord.invite) ? String(cfg.discord.invite) : 'https://discord.gg/xXru9PEFdg';
+      var guildId = (cfg && cfg.discord && cfg.discord.guild_id) ? String(cfg.discord.guild_id) : '';
+      var channelId = (cfg && cfg.discord && cfg.discord.support_channel_id) ? String(cfg.discord.support_channel_id) : '';
+      var href = (guildId && channelId) ? ('https://discord.com/channels/' + guildId + '/' + channelId) : invite;
+      qsa('a[data-support-link]').forEach(function(a){
+        a.href = href;
+        a.title = 'Opens the IRP Discord support channel. If you are not in the server yet, you may be prompted to join.';
+      });
+    }).catch(function(){ /* ignore */ });
+  }
+
   // -------- Status Banner --------
   function injectStatusBanner(){
     var body = document.body;
@@ -252,6 +266,7 @@
     createSearchModal();
     wireSearch();
     enhanceBreadcrumbs();
+    updateSupportLinks();
   }
 
   if(document.readyState === 'loading'){

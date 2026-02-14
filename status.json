@@ -9,6 +9,11 @@
   "worker": {
     "base": "https://irp-status.istok-cac.workers.dev"
   },
+  "discord": {
+    "guild_id": "1462098962692706472",
+    "support_channel_id": "1462354481802121290",
+    "invite": "https://discord.gg/xXru9PEFdg"
+  },
   "fivem": {
     "cfx_join": "z5bz49"
   }

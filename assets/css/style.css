@@ -29,6 +29,12 @@ a{color:inherit;text-decoration:none}
 .brand img{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:#0b0f14}
 .brand .title{font-weight:900;letter-spacing:.3px}
 .brand .sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* Make the logo/brand link feel clickable (matches global red hover language) */
+.brand:hover .title,
+.brand:focus-visible .title{color:#fff}
+.brand:hover img,
+.brand:focus-visible img{border-color:rgba(255,45,45,.55);box-shadow:0 0 0 4px rgba(255,45,45,.12)}
 .nav-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 .pill{
   display:inline-flex;
@@ -64,6 +70,10 @@ a{color:inherit;text-decoration:none}
 .badge{font-family:var(--mono);font-size:12px;padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.03)}
 .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;padding:18px 0 30px}
 @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+
+/* Two-up grid used on Status and similar pages */
+.grid-2{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:18px}
+@media (max-width: 980px){.grid-2{grid-template-columns:1fr}}
 .card{border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.03);box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden}
 .card-inner{padding:18px}
 .card h2{margin:0 0 10px;font-size:18px}
@@ -197,6 +207,13 @@ main.container { padding-bottom: 48px; }
   border:1px solid var(--line);
   background:rgba(255,255,255,.03);
   cursor:pointer;
+}
+.nav-toggle:hover,.nav-toggle:focus-visible{
+  border-color: rgba(255,45,45,.55);
+  background: linear-gradient(90deg, rgba(255,45,45,.20), rgba(255,122,24,.14));
+  box-shadow: 0 0 0 4px rgba(255,45,45,.12);
+  color:#fff;
+  outline:none;
 }
 .nav-toggle svg{width:20px;height:20px}
 .nav-panel{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
@@ -532,6 +549,44 @@ main.container { padding-bottom: 48px; }
 .field textarea{min-height:110px;resize:vertical}
 .helper{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.55}
 .doc-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:var(--muted);font-size:12px}
+
+/* Changelog filter chips */
+.changelog-filters{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+
+/* Changelog layout: use masonry-style columns to avoid large vertical gaps between cards */
+.changelog-grid{
+  display:block; /* override grid */
+  column-count: 2;
+  column-gap: 18px;
+}
+.changelog-grid .doc-card{
+  display:inline-block;
+  width:100%;
+  break-inside: avoid;
+  margin: 0 0 18px;
+}
+@media (max-width: 980px){
+  .changelog-grid{column-count: 1; column-gap: 0;}
+  .changelog-grid .doc-card{margin-bottom: 12px;}
+}
+.changelog-chip{cursor:pointer}
+.changelog-chip.is-active{
+  border-color: rgba(255,45,45,.55);
+  background: linear-gradient(90deg, rgba(255,45,45,.20), rgba(255,122,24,.14));
+  box-shadow: 0 0 0 4px rgba(255,45,45,.12);
+  color: #fff;
+}
+
+/* Allow category pills inside cards to be clickable and match the site hover style */
+.doc-pill.is-clickable{cursor:pointer;user-select:none}
+.doc-pill.is-clickable:hover,
+.doc-pill.is-clickable:focus-visible{
+  border-color: rgba(255,45,45,.55);
+  background: linear-gradient(90deg, rgba(255,45,45,.20), rgba(255,122,24,.14));
+  box-shadow: 0 0 0 4px rgba(255,45,45,.12);
+  color:#fff;
+  outline:none;
+}
 
 /* IRP: Status cards */
 .status-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}

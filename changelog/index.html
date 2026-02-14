@@ -95,65 +95,12 @@
     <b>Note:</b> This changelog highlights major updates. Smaller balance tweaks and bug fixes are shipped continuously.
   </div>
 
-  <div class="doc-cardgrid" style="grid-template-columns: repeat(2, minmax(0,1fr)); margin-top:14px">
-    
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">Core</div>
-          <strong style="margin-top:10px; display:block">Production website and SOP suite deployed</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-12</span>
-          <ul style="margin-top:10px"><li>Launched the official IRP website on GitHub Pages with a modern, responsive UI.</li><li>Published full SOP pack (Civilian, Gang, LEO/EMS, Staff) plus downloads and handbook.</li><li>Discord integration across navigation, tickets, and support workflows.</li></ul>
-        </div>
-        
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">UI</div>
-          <strong style="margin-top:10px; display:block">Optimized target and HUD upgrades</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-12</span>
-          <ul style="margin-top:10px"><li>Reworked targeting and interaction UI patterns for clarity and performance.</li><li>Improved HUD UX and replaced compass behavior for better readability.</li></ul>
-        </div>
-        
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">Police</div>
-          <strong style="margin-top:10px; display:block">Dispatch and MDT integration foundation</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-12</span>
-          <ul style="margin-top:10px"><li>Prepared a seamless workflow between dispatch, MDT, and police job for roleplay continuity.</li><li>Ensured clean paths and events to reduce desync and improve reliability.</li></ul>
-        </div>
-        
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">Economy</div>
-          <strong style="margin-top:10px; display:block">Chopshop and package gameplay improvements</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-12</span>
-          <ul style="margin-top:10px"><li>Updated chopshop flow to support solo-friendly progression and better part handling.</li><li>Started expanding package/vehicle robbery loops for organic crime gameplay.</li></ul>
-        </div>
-        
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">Security</div>
-          <strong style="margin-top:10px; display:block">Anti-exploit and admin response baseline</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-12</span>
-          <ul style="margin-top:10px"><li>Introduced production-minded detection and admin response concepts.</li><li>Focus on low-impact checks and staff visibility (logging and notifications).</li></ul>
-        </div>
-        
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">Jobs</div>
-          <strong style="margin-top:10px; display:block">Taxi exploitation hardening plan</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-12</span>
-          <ul style="margin-top:10px"><li>Added route adherence checks and recovery logic for AI fare jobs.</li><li>Improved passenger behavior and reduced common door/exit glitches.</li></ul>
-        </div>
-        
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">Gameplay</div>
-          <strong style="margin-top:10px; display:block">Sit system remake with QBCore drawtext option</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-10</span>
-          <ul style="margin-top:10px"><li>Rebuilt seat interactions using qb-target with drawtext fallback.</li><li>Animation handling aligned with rpemotes style for consistency.</li></ul>
-        </div>
-        
-        <div class="doc-card" style="display:block">
-          <div class="doc-pill">Crime</div>
-          <strong style="margin-top:10px; display:block">Scrap thief enhancements and AI security behavior</strong>
-          <span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: 2026-02-10</span>
-          <ul style="margin-top:10px"><li>Improved proximity-based security spawns to keep performance stable.</li><li>Standardized dispatch behavior and tuned interaction windows.</li></ul>
-        </div>
-        
-  </div>
+  <!-- Filter chips + meta (rendered from /changelog/data.json) -->
+  <div id="clFilters" class="changelog-filters" aria-label="Changelog filters"></div>
+  <div id="clMeta" style="margin-top:10px"></div>
+
+  <!-- Cards are rendered dynamically so the page always matches data.json -->
+  <div id="clList" class="doc-cardgrid changelog-grid" style="margin-top:14px"></div>
 
   <div class="actions" style="margin-top:16px">
     <a class="btn primary" href="/downloads/">Downloads</a>
@@ -197,5 +144,6 @@
 
   <script src="/assets/js/docs.js"></script>
   <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/changelog.js"></script>
 </body>
 </html>

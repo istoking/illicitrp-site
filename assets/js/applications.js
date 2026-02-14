@@ -1,20 +1,54 @@
 (function(){
   function esc(s){ return (s||'').toString().trim(); }
 
-  // Worker endpoint (kept in /status.json so it is easy to change without touching multiple pages)
-  var WORKER_BASE = null;
-  async function loadWorkerBase(){
-    if(WORKER_BASE !== null) return WORKER_BASE;
-    try{
-      var r = await fetch('/status.json', { cache: 'no-store' });
-      if(!r.ok) { WORKER_BASE = ''; return WORKER_BASE; }
-      var j = await r.json();
-      WORKER_BASE = (j && j.worker && j.worker.base) ? String(j.worker.base).replace(/\/$/, '') : '';
-      return WORKER_BASE;
-    }catch(e){
-      WORKER_BASE = '';
-      return WORKER_BASE;
+  // Site config (kept in /status.json so it is easy to change without touching multiple pages)
+  var SITE_CFG = null;
+
+  async function fetchFirstJson(paths){
+    for(var i=0;i<paths.length;i++){
+      try{
+        var r = await fetch(paths[i], { cache: 'no-store' });
+        if(!r.ok) continue;
+        return await r.json();
+      }catch(e){
+        // keep trying
+      }
     }
+    return {};
+  }
+
+  async function loadSiteConfig(){
+    if(SITE_CFG !== null) return SITE_CFG;
+    try{
+      // Support GitHub Pages sub-path deployments (e.g. /repo/...) by trying relative fallbacks.
+      SITE_CFG = await fetchFirstJson([
+        '/status.json',
+        '../status.json',
+        './status.json',
+        '../../status.json'
+      ]);
+      return SITE_CFG;
+    }catch(e){
+      SITE_CFG = {};
+      return SITE_CFG;
+    }
+  }
+
+  async function loadWorkerBase(){
+    var cfg = await loadSiteConfig();
+    var base = (cfg && cfg.worker && cfg.worker.base) ? String(cfg.worker.base).replace(/\/$/, '') : '';
+    return base;
+  }
+
+  async function getSupportHref(){
+    var cfg = await loadSiteConfig();
+    var invite = (cfg && cfg.discord && cfg.discord.invite) ? String(cfg.discord.invite) : 'https://discord.gg/xXru9PEFdg';
+    var guildId = (cfg && cfg.discord && cfg.discord.guild_id) ? String(cfg.discord.guild_id) : '';
+    var channelId = (cfg && cfg.discord && cfg.discord.support_channel_id) ? String(cfg.discord.support_channel_id) : '';
+    if(guildId && channelId){
+      return 'https://discord.com/channels/' + guildId + '/' + channelId;
+    }
+    return invite;
   }
   function makeBlock(title, fields){
     var out = [];
@@ -47,40 +81,57 @@
     return Promise.resolve();
   }
 
-  function renderOutput(targetEl, text){
+  async function renderOutput(targetEl, text, payload){
+    var supportHref = await getSupportHref();
     targetEl.style.display = 'block';
     targetEl.innerHTML = [
       '<div class="result" style="cursor:default">',
         '<strong>Submission generated</strong>',
-        '<span>You can copy this into a ticket, or submit it directly to staff.</span>',
+        '<span>Copy to clipboard will also submit your application to staff.</span>',
         '<div class="actions" style="margin-top:12px">',
           '<button class="btn primary" id="copyBtn">Copy to Clipboard</button>',
-          '<button class="btn" id="submitBtn" type="button">Submit to Staff</button>',
-          '<a class="btn" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Open Discord Support</a>',
+          '<a class="btn" id="supportBtn" target="_blank" rel="noopener">Open Discord Support</a>',
         '</div>',
         '<div class="muted" id="submitMsg" style="margin-top:10px; display:none;"></div>',
         '<pre style="white-space:pre-wrap; margin-top:12px; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:12px; background: rgba(0,0,0,.18)"></pre>',
       '</div>'
     ].join('');
     targetEl.querySelector('pre').textContent = text;
-    targetEl.querySelector('#copyBtn').addEventListener('click', function(){
+
+    // Support link (channel deep-link when available, otherwise invite)
+    var supportBtn = targetEl.querySelector('#supportBtn');
+    supportBtn.href = supportHref;
+    supportBtn.title = 'Opens the IRP Discord support channel. If you are not in the server yet, you may be prompted to join.';
+
+    var msgEl = targetEl.querySelector('#submitMsg');
+    var copyBtn = targetEl.querySelector('#copyBtn');
+    copyBtn.addEventListener('click', function(){
+      copyBtn.disabled = true;
+      msgEl.style.display = 'block';
+      msgEl.textContent = 'Copying to clipboard…';
       copyToClipboard(text).then(function(){
-        targetEl.querySelector('#copyBtn').textContent = 'Copied';
-        setTimeout(function(){ targetEl.querySelector('#copyBtn').textContent = 'Copy to Clipboard'; }, 1500);
+        copyBtn.textContent = 'Copied';
+        // Clipboard success should not be treated as a submission failure.
+        msgEl.textContent = 'Copied to clipboard. Submitting to staff…';
+        return submitToStaff(payload, msgEl);
+      }).catch(function(){
+        msgEl.textContent = 'Copy failed. Please manually select the text below and copy it, then use Open Discord Support.';
+      }).finally(function(){
+        copyBtn.disabled = false;
+        setTimeout(function(){ copyBtn.textContent = 'Copy to Clipboard'; }, 1500);
       });
     });
   }
 
-  async function submitToStaff(payload, msgEl, btnEl){
+  async function submitToStaff(payload, msgEl){
     var base = await loadWorkerBase();
     if(!base){
       msgEl.style.display = 'block';
-      msgEl.textContent = 'Direct submission is not configured yet. Please use Copy to Clipboard and open a ticket.';
+      msgEl.textContent = 'Copied to clipboard. Auto-submit is not configured yet — please use Open Discord Support and submit via a ticket.';
       return;
     }
-    btnEl.disabled = true;
     msgEl.style.display = 'block';
-    msgEl.textContent = 'Submitting…';
+    msgEl.textContent = 'Submitting to staff…';
 
     try{
       var r = await fetch(base + '/apply', {
@@ -88,17 +139,19 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
       var j = null;
       try { j = await r.json(); } catch(_) {}
-      if(!r.ok || !j || j.ok !== true){
-        msgEl.textContent = 'Submission failed. Please copy to clipboard and submit via a ticket.';
-      } else {
-        msgEl.textContent = 'Submitted to staff successfully.';
+      var ok = !!r.ok;
+      if(j && typeof j === 'object'){
+        if(j.ok === true || j.success === true) ok = true;
+        else if('ok' in j || 'success' in j) ok = false;
       }
+
+      if(ok) msgEl.textContent = 'Copied to clipboard. Submitted to staff successfully.';
+      else msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
     }catch(e){
-      msgEl.textContent = 'Submission failed. Please copy to clipboard and submit via a ticket.';
-    } finally {
-      btnEl.disabled = false;
+      msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
     }
   }
 
@@ -121,29 +174,24 @@
       ];
       var text = makeBlock('IRP Join Application', fields);
       var out = document.getElementById('appOutWrap');
-      renderOutput(out, text);
 
-      // Hook submit button to Worker
-      var submitBtn = out.querySelector('#submitBtn');
-      var msgEl = out.querySelector('#submitMsg');
-      submitBtn.addEventListener('click', function(){
-        var payload = {
-          type: 'Join Application',
-          name: esc(document.getElementById('a_name') ? document.getElementById('a_name').value : ''),
-          discord: esc(document.getElementById('a_discord').value),
-          timezone: esc(document.getElementById('a_tz').value),
-          age_bracket: esc(document.getElementById('a_age').value),
-          rp_experience: esc(document.getElementById('a_exp').value),
-          character_concept: esc(document.getElementById('q_char').value),
-          handling_loss: esc(document.getElementById('q_loss').value),
-          conflict_escalation: esc(document.getElementById('q_escalation').value),
-          mechanical_issues: esc(document.getElementById('q_mech').value),
-          accountability: esc(document.getElementById('q_account').value),
-          staff_interaction: esc(document.getElementById('q_staff').value),
-          final_note: esc(document.getElementById('q_final').value)
-        };
-        submitToStaff(payload, msgEl, submitBtn);
-      });
+      var payload = {
+        type: 'Join Application',
+        name: esc(document.getElementById('a_name') ? document.getElementById('a_name').value : ''),
+        discord: esc(document.getElementById('a_discord').value),
+        timezone: esc(document.getElementById('a_tz').value),
+        age_bracket: esc(document.getElementById('a_age').value),
+        rp_experience: esc(document.getElementById('a_exp').value),
+        character_concept: esc(document.getElementById('q_char').value),
+        handling_loss: esc(document.getElementById('q_loss').value),
+        conflict_escalation: esc(document.getElementById('q_escalation').value),
+        mechanical_issues: esc(document.getElementById('q_mech').value),
+        accountability: esc(document.getElementById('q_account').value),
+        staff_interaction: esc(document.getElementById('q_staff').value),
+        final_note: esc(document.getElementById('q_final').value)
+      };
+
+      renderOutput(out, text, payload);
     });
   }
 
@@ -162,24 +210,20 @@
       ];
       var text = makeBlock('IRP Whitelist Application', fields);
       var out = document.getElementById('wlOutWrap');
-      renderOutput(out, text);
 
-      var submitBtn = out.querySelector('#submitBtn');
-      var msgEl = out.querySelector('#submitMsg');
-      submitBtn.addEventListener('click', function(){
-        var payload = {
-          type: 'Whitelist Application',
-          name: esc(document.getElementById('w_name') ? document.getElementById('w_name').value : ''),
-          discord: esc(document.getElementById('w_discord').value),
-          role: esc(document.getElementById('w_role').value),
-          why_this_role: esc(document.getElementById('w_why').value),
-          under_pressure: esc(document.getElementById('w_pressure').value),
-          neutrality_professionalism: esc(document.getElementById('w_neutral').value),
-          knowledge_check: esc(document.getElementById('w_knowledge').value),
-          availability: esc(document.getElementById('w_avail').value)
-        };
-        submitToStaff(payload, msgEl, submitBtn);
-      });
+      var payload = {
+        type: 'Whitelist Application',
+        name: esc(document.getElementById('w_name') ? document.getElementById('w_name').value : ''),
+        discord: esc(document.getElementById('w_discord').value),
+        role: esc(document.getElementById('w_role').value),
+        why_this_role: esc(document.getElementById('w_why').value),
+        under_pressure: esc(document.getElementById('w_pressure').value),
+        neutrality_professionalism: esc(document.getElementById('w_neutral').value),
+        knowledge_check: esc(document.getElementById('w_knowledge').value),
+        availability: esc(document.getElementById('w_avail').value)
+      };
+
+      renderOutput(out, text, payload);
     });
   }
 
