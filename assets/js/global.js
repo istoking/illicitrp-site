@@ -313,3 +313,21 @@
     init();
   }
 })();
+
+// Auto-add Queue link to Community dropdown (POLICE_QUEUE)
+;(function(){
+  try{
+    const items = document.querySelectorAll('a');
+    let has = false;
+    items.forEach(a=>{ if((a.getAttribute('href')||'') === '/queue/' || (a.getAttribute('href')||'') === '/queue') has=true; });
+    if(has) return;
+    const dropdowns = document.querySelectorAll('[data-dropdown="community"], .dropdown[data-name="community"], .nav-dropdown-community');
+    const target = dropdowns.length ? dropdowns[0] : null;
+    if(!target) return;
+    const a = document.createElement('a');
+    a.href = '/queue/';
+    a.textContent = 'Queue';
+    a.className = 'dropdown-item';
+    target.appendChild(a);
+  }catch{}
+})();

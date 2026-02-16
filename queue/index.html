@@ -1,0 +1,43 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Queue</title></head><body><main class='container'>
+
+<div class="card" style="max-width: 920px; margin: 0 auto;">
+  <h1 style="margin-bottom: 6px;">Web Queue</h1>
+  <p style="opacity:.85;margin-top:0;">Login with Discord, then join the appropriate queue. You'll get a sound notification when it's your turn to connect.</p>
+
+  <div id="unauthed">
+    <button class="btn" id="btnLogin">Login with Discord</button>
+  </div>
+
+  <div id="authed" style="display:none;">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;">
+      <button class="btn" id="btnJoinNormal">Join Normal Queue</button>
+      <button class="btn" id="btnJoinPolice" disabled>Join Priority Queue</button>
+      <button class="btn" id="btnLeave">Leave Queue</button>
+      <button class="btn" id="btnConnect" style="display:none;">Connect Now</button>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;opacity:.9;">
+      <span>Account: <strong id="qMe">-</strong></span>
+      <span>Lane: <strong id="qLane">NORMAL</strong></span>
+      <span>Position: <strong id="qPos">-</strong></span>
+      <span>ETA: <strong id="qEta">-</strong></span>
+      <span>Server: <strong id="qPlayers">-</strong></span>
+    </div>
+    <div id="qNearFull" style="display:none;margin-top:10px;opacity:.9;">
+      <strong>Notice:</strong> Server is near/full — you may briefly see the in-game queue after connecting.
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:12px;opacity:.9;">
+      <span style="min-width:140px;">Notification volume</span>
+      <input id="soundVol" type="range" min="0" max="100" value="35" style="width:220px;">
+      <span id="soundVolLabel" style="min-width:44px;text-align:right;">35%</span>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input id="soundMute" type="checkbox">
+        Mute
+      </label>
+    </div>
+    <div style="margin-top:8px;opacity:.8;" id="qPoliceNote"></div>
+  </div>
+
+  <div style="margin-top:12px;" id="qStatus"></div>
+</div>
+<h1>Queue</h1><div id='queue-app'></div><script src='/assets/js/queue.js'></script></main></body></html>
