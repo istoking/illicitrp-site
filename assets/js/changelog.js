@@ -46,10 +46,11 @@
     if (!listEl || !filtersEl) return;
 
     var today = new Date();
+    var lastUpdated = null;
 
     function renderMeta(count, activeLabel) {
       if (!metaEl) return;
-      var updated = new Date().toISOString().slice(0, 10);
+      var updated = (lastUpdated ? String(lastUpdated).slice(0, 10) : new Date().toISOString().slice(0, 10));
       metaEl.innerHTML = [
         '<span class="doc-pill">Showing: ' + count + '</span>',
         '<span class="doc-pill">Filter: ' + esc(activeLabel) + '</span>',
@@ -57,9 +58,19 @@
       ].join(' ');
     }
 
-    fetch('/changelog/data.json', { cache: 'no-store' })
+    fetch('/status.json', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
-      .then(function (items) {
+      .then(function (status) {
+        var base = status && status.worker && status.worker.base ? String(status.worker.base) : '';
+        if (!base) throw new Error('Missing worker base in /status.json');
+        return fetch(base.replace(/\/+$/,'') + '/changelog', { cache: 'no-store' });
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (payload) {
+        var items = (payload && payload.entries) ? payload.entries : (payload || []);
+        var updatedAt = (payload && payload.updatedAt) ? payload.updatedAt : null;
+        lastUpdated = updatedAt || null;
+
         items = (items || []).slice().sort(function (a, b) {
           return String(b.date || '').localeCompare(String(a.date || ''));
         });
@@ -78,7 +89,7 @@
                 (isNew ? '<div class="badge-new">New</div>' : ''),
               '</div>',
               '<strong style="margin-top:10px; display:block">' + esc(it.title) + '</strong>',
-              '<span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: ' + esc(it.date) + '</span>',
+              '<span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: ' + esc(it.date) + (it.time ? ' • ' + esc(it.time) : '') + '</span>',
               '<ul style="margin-top:10px">' + lis + '</ul>',
             '</div>'
           ].join('');
