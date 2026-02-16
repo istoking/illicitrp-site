@@ -102,6 +102,29 @@
   <!-- Cards are rendered dynamically so the page always matches data.json -->
   <div id="clList" class="doc-cardgrid changelog-grid" style="margin-top:14px"></div>
 
+  <!-- Archive (KV-backed via worker) -->
+  <div id="clArchiveWrap" class="doc-card" style="margin-top:18px; display:none">
+    <div class="doc-title">Changelog Archive</div>
+    <div class="doc-sub" style="margin-top:6px">
+      Older changelogs are kept here automatically when new updates push them out of the main list.
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="doc-kicker">Recently archived</div>
+      <div id="clArchiveRecent" class="doc-cardgrid changelog-grid" style="margin-top:10px"></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="doc-kicker">Browse by month</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px">
+        <select id="clArchiveMonth" class="input" aria-label="Archive month"></select>
+        <button id="clArchiveLoad" class="btn" type="button">Load</button>
+      </div>
+      <div id="clArchiveList" class="doc-cardgrid changelog-grid" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+
   <div class="actions" style="margin-top:16px">
     <a class="btn primary" href="/downloads/">Downloads</a>
     <a class="btn" href="/docs/">Docs</a>
