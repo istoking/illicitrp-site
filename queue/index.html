@@ -73,20 +73,20 @@
   <h1 class="page-title">Web Queue</h1>
   <p class="page-sub">Login with Discord, then join the appropriate queue. You’ll get a sound notification when it’s your turn to connect.</p>
 
-  <div class="card" style="max-width: 920px; margin: 18px auto 0;">
+  <div class="card queue-card">
     <div id="unauthed">
       <button class="btn" id="btnLogin">Login with Discord</button>
     </div>
 
     <div id="authed" style="display:none;">
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;">
+      <div class="queue-actions">
         <button class="btn" id="btnJoinNormal">Join Normal Queue</button>
         <button class="btn" id="btnJoinPolice" disabled>Join Priority Queue</button>
         <button class="btn" id="btnLeave">Leave Queue</button>
         <button class="btn" id="btnConnect" style="display:none;">Connect Now</button>
       </div>
 
-      <div style="display:flex;gap:12px;flex-wrap:wrap;opacity:.9;">
+      <div class="queue-stats">
         <span>Account: <strong id="qMe">-</strong></span>
         <span>Lane: <strong id="qLane">NORMAL</strong></span>
         <span>Position: <strong id="qPos">-</strong></span>
@@ -94,13 +94,13 @@
         <span>Server: <strong id="qPlayers">-</strong></span>
       </div>
 
-      <div id="qNearFull" style="display:none;margin-top:10px;opacity:.9;">
+      <div id="qNearFull" class="queue-note" style="display:none;">
         <strong>Notice:</strong> Server is near/full — you may briefly see the in-game queue after connecting.
       </div>
-      <div style="margin-top:8px;opacity:.8;" id="qPoliceNote"></div>
+      <div class="queue-subnote" id="qPoliceNote"></div>
     </div>
 
-    <div style="margin-top:12px;" id="qStatus"></div>
+    <div class="queue-status" id="qStatus"></div>
   </div>
 </main>
 

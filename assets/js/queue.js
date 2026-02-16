@@ -48,7 +48,7 @@
 
     async function refreshMe(){
       const r = await api(base, '/api/me');
-      if(!r.ok){
+      if(!r.ok || !r.body || r.body.ok === false){
         show($('#authed'), false);
         show($('#unauthed'), true);
         btnPolice.disabled = true;
