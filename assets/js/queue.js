@@ -18,64 +18,7 @@
   function loadBeep(){
     const a = new Audio('/assets/sfx/Alert.ogg');
     a.preload = 'auto';
-
-    // Volume: 0..100 stored in localStorage (defaults to 18%)
-    const storageKey = 'queue_sound_vol';
-    const muteKey = 'queue_sound_mute';
-
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-
-    function getVol(){
-      const raw = localStorage.getItem(storageKey);
-      const v = raw == null ? 18 : Number(raw);
-      return clamp(Number.isFinite(v) ? v : 18, 0, 100);
-    }
-
-    function isMuted(){
-      return localStorage.getItem(muteKey) === '1';
-    }
-
-    function applyVol(){
-      const v = getVol();
-      a.volume = isMuted() ? 0 : (v / 100);
-      const el = document.getElementById('soundVol');
-      const lbl = document.getElementById('soundVolLabel');
-      const mute = document.getElementById('soundMute');
-      if(el) el.value = String(v);
-      if(lbl) lbl.textContent = v + '%';
-      if(mute) mute.checked = isMuted();
-    }
-
-    // Wire UI (if present)
-    setTimeout(() => {
-      const el = document.getElementById('soundVol');
-      const mute = document.getElementById('soundMute');
-      if(el){
-        el.addEventListener('input', () => {
-          const v = clamp(Number(el.value), 0, 100);
-          localStorage.setItem(storageKey, String(v));
-          applyVol();
-        });
-      }
-      if(mute){
-        mute.addEventListener('change', () => {
-          localStorage.setItem(muteKey, mute.checked ? '1' : '0');
-          applyVol();
-        });
-      }
-      applyVol();
-    }, 0);
-
-    applyVol();
-
-    return () => {
-      try{
-        applyVol();
-        if(a.volume <= 0) return;
-        a.currentTime = 0;
-        a.play().catch(()=>{});
-      }catch{}
-    };
+    return () => { try{ a.currentTime = 0; a.play().catch(()=>{}); }catch{} };
   }
 
   const beep = loadBeep();
