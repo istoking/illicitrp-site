@@ -260,12 +260,50 @@
     });
   }
 
+  // -------- Header Dropdowns (SOPs / Community) --------
+  function wireDropdowns(){
+    // Uses <details> elements; ensure only one dropdown is open at a time,
+    // and close when clicking outside or pressing Esc.
+    var dropdownDetails = qsa('.dropdown details');
+    if(!dropdownDetails.length) return;
+
+    function closeAll(except){
+      dropdownDetails.forEach(function(d){
+        if(d !== except) d.removeAttribute('open');
+      });
+    }
+
+    dropdownDetails.forEach(function(d){
+      d.addEventListener('toggle', function(){
+        if(d.open){
+          closeAll(d);
+        }
+      });
+    });
+
+    document.addEventListener('click', function(e){
+      // If click is outside any dropdown, close all.
+      var inside = e.target && e.target.closest ? e.target.closest('.dropdown details') : null;
+      if(!inside){
+        closeAll(null);
+      }
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        closeAll(null);
+      }
+    });
+  }
+
+
   function init(){
     // Status banner disabled (was /status.json driven)
     injectSearchButton();
     createSearchModal();
     wireSearch();
     enhanceBreadcrumbs();
+    wireDropdowns();
     updateSupportLinks();
   }
 
