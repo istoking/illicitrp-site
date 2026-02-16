@@ -57,113 +57,248 @@
       ].join(' ');
     }
 
-    fetch('/changelog/data.json', { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .then(function (items) {
-        items = (items || []).slice().sort(function (a, b) {
+    (async function () {
+      try {
+        // Prefer worker-backed changelog (Discord -> Worker -> Site)
+        var base = null;
+        try {
+          var s = await fetch('/status.json', { cache: 'no-store' });
+          if (s.ok) {
+            var sj = await s.json();
+            base = sj && sj.worker && sj.worker.base ? String(sj.worker.base) : null;
+          }
+        } catch (_) {}
+
+        var items = null;
+        var archiveInfo = null;
+
+        if (base) {
+          try {
+            var w = await fetch(base.replace(/\/+$/, '') + '/changelog', { cache: 'no-store' });
+            if (w.ok) {
+              var wj = await w.json();
+              if (wj && wj.ok && Array.isArray(wj.entries)) {
+                items = wj.entries;
+                archiveInfo = wj.archive || null;
+              }
+            }
+          } catch (_) {}
+        }
+
+        // Fallback to static file (GitHub Pages)
+        if (!items) {
+          var r = await fetch('/changelog/data.json', { cache: 'no-store' });
+          if (r.ok) items = await r.json();
+        }
+
+        items = Array.isArray(items) ? items : [];
+        items = items.slice().sort(function (a, b) {
+          // Prefer timestamp sort if present
+          var am = Number(a && a.createdAtMs) || 0;
+          var bm = Number(b && b.createdAtMs) || 0;
+          if (am && bm) return bm - am;
           return String(b.date || '').localeCompare(String(a.date || ''));
         });
 
-        // Build cards first (so filters can also be built from rendered content if needed)
+        // Build cards
         listEl.innerHTML = items.map(function (it) {
           var typeLabel = (it && it.type) ? String(it.type) : 'Other';
           var cat = slugify(typeLabel) || 'other';
-          var d = parseDate(it.date);
-          var isNew = d ? (daysBetween(today, d) <= 14) : false;
-          var lis = (it.details || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('');
-          return [
-            '<div class="doc-card" data-cat="' + esc(cat) + '" data-cat-label="' + esc(typeLabel) + '" style="display:block">',
-              '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">',
-                '<div class="doc-pill is-clickable" role="button" tabindex="0" data-filter="' + esc(cat) + '">' + esc(typeLabel) + '</div>',
-                (isNew ? '<div class="badge-new">New</div>' : ''),
-              '</div>',
-              '<strong style="margin-top:10px; display:block">' + esc(it.title) + '</strong>',
-              '<span style="opacity:.85; font-size:13px; display:block; margin-top:6px">Date: ' + esc(it.date) + '</span>',
-              '<ul style="margin-top:10px">' + lis + '</ul>',
-            '</div>'
-          ].join('');
+
+          var dateStr = (it && it.date) ? String(it.date) : '';
+          var timeStr = (it && it.time) ? String(it.time) : '';
+          var stamp = dateStr ? ('Date: ' + esc(dateStr) + (timeStr ? (' • ' + esc(timeStr)) : '')) : '';
+
+          var d = parseDate(dateStr);
+          var isRecent = d ? (Math.abs(daysBetween(today, d)) <= 7) : false;
+
+          var tagPills = [];
+          if (it && Array.isArray(it.tags) && it.tags.length) {
+            tagPills = it.tags.map(function (t) {
+              var s = slugify(t) || 'other';
+              var label = String(t || s);
+              return '<button class="doc-pill" data-filter="' + esc(s) + '" type="button">' + esc(label) + '</button>';
+            });
+          }
+
+          var bullets = [];
+          if (it && Array.isArray(it.details) && it.details.length) bullets = it.details;
+          else if (it && Array.isArray(it.bullets) && it.bullets.length) bullets = it.bullets;
+
+          var notes = '';
+          if (it && it.notes) notes = String(it.notes);
+
+          var links = '';
+          if (it && it.url) links = '<a class="doc-pill" href="' + esc(it.url) + '" target="_blank" rel="noopener">Discord</a>';
+
+          return (
+            '<article class="doc-card changelog-card" data-cat="' + esc(cat) + '" data-tags="' + esc((it.tags || []).join(',')) + '">' +
+              '<div class="doc-row">' +
+                '<div class="doc-title">' + esc(it.title || '') + '</div>' +
+                (isRecent ? '<span class="doc-pill glow">New</span>' : '') +
+              '</div>' +
+              (stamp ? '<div class="doc-sub" style="margin-top:6px">' + stamp + '</div>' : '') +
+              '<div class="doc-row" style="margin-top:10px; gap:8px; flex-wrap:wrap">' +
+                '<button class="doc-pill" data-filter="' + esc(cat) + '" type="button">' + esc(typeLabel) + '</button>' +
+                tagPills.join('') +
+                links +
+              '</div>' +
+              (bullets.length ? '<ul class="doc-list" style="margin-top:10px">' +
+                bullets.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') +
+              '</ul>' : '') +
+              (notes ? '<pre class="doc-pre" style="margin-top:10px; white-space:pre-wrap">' + esc(notes) + '</pre>' : '') +
+            '</article>'
+          );
         }).join('');
 
-        var cards = qsa('.doc-card', listEl);
-        if (!cards.length) return;
+        // Build filters (type + tags discovered)
+        var categories = {};
+        items.forEach(function (it) {
+          var t = (it && it.type) ? String(it.type) : 'Other';
+          categories[slugify(t) || 'other'] = t;
 
-        // Extract categories from cards
-        var cats = [];
-        var map = Object.create(null); // slug -> label
-        cards.forEach(function (card) {
-          var slug = card.getAttribute('data-cat') || 'other';
-          var label = card.getAttribute('data-cat-label') || 'Other';
-          if (!map[slug]) {
-            map[slug] = label;
-            cats.push({ slug: slug, label: label });
+          if (it && Array.isArray(it.tags)) {
+            it.tags.forEach(function (tg) {
+              var s = slugify(tg) || '';
+              if (!s) return;
+              categories[s] = toLabel(s);
+            });
           }
         });
 
-        cats.sort(function (a, b) { return a.label.localeCompare(b.label); });
+        var cats = Object.keys(categories).sort();
+        if (!cats.length) cats = ['all'];
 
-        function makeChip(label, value) {
-          var btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'pill changelog-chip';
-          btn.textContent = label;
-          btn.dataset.value = value;
-          btn.addEventListener('click', function () { setFilter(value); });
-          return btn;
-        }
+        var active = (location.hash || '').replace('#', '');
+        if (!active) active = 'all';
 
-        function setActiveChip(value) {
-          qsa('.changelog-chip', filtersEl).forEach(function (b) {
-            b.classList.toggle('is-active', b.dataset.value === value);
-          });
-        }
+        filtersEl.innerHTML = [
+          '<button class="doc-pill" data-filter="all" type="button">All</button>'
+        ].concat(cats.map(function (k) {
+          if (k === 'all') return '';
+          return '<button class="doc-pill" data-filter="' + esc(k) + '" type="button">' + esc(categories[k]) + '</button>';
+        }).filter(Boolean)).join('');
 
-        function setFilter(value) {
-          var v = value || 'all';
-          setActiveChip(v);
-
-          var shown = 0;
-          cards.forEach(function (card) {
-            var show = v === 'all' || card.getAttribute('data-cat') === v;
-            card.style.display = show ? 'block' : 'none';
-            if (show) shown++;
+        function applyFilter(key) {
+          key = key || 'all';
+          var cards = qsa('.changelog-card', listEl);
+          cards.forEach(function (c) {
+            var cat = c.getAttribute('data-cat') || '';
+            var tags = (c.getAttribute('data-tags') || '').split(',').filter(Boolean);
+            var show = (key === 'all') || (cat === key) || (tags.indexOf(key) !== -1);
+            c.style.display = show ? '' : 'none';
           });
 
-          renderMeta(shown, v === 'all' ? 'All' : (map[v] || v));
+          qsa('.doc-pill', filtersEl).forEach(function (b) {
+            var k = b.getAttribute('data-filter');
+            if (k === key) b.classList.add('active');
+            else b.classList.remove('active');
+          });
 
-          // Keep URL hash in sync
-          if (v === 'all') {
-            if (location.hash) history.replaceState(null, '', location.pathname + location.search);
-          } else {
-            if (location.hash !== '#' + v) history.replaceState(null, '', '#' + v);
-          }
+          if (metaEl) metaEl.innerHTML = '<span class="doc-pill">' + esc(cards.filter(function(c){ return c.style.display !== 'none'; }).length) + ' shown</span>';
+          location.hash = key === 'all' ? '' : '#' + key;
         }
 
-        // Render chips
-        filtersEl.innerHTML = '';
-        filtersEl.appendChild(makeChip('All', 'all'));
-        cats.forEach(function (c) { filtersEl.appendChild(makeChip(c.label, c.slug)); });
-
-        // Make per-card category pills filterable
-        qsa('.doc-pill.is-clickable', listEl).forEach(function (pill) {
-          var v = pill.getAttribute('data-filter');
-          if (!v) return;
-          pill.addEventListener('click', function () { setFilter(v); });
-          pill.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setFilter(v);
-            }
-          });
+        filtersEl.addEventListener('click', function (e) {
+          var t = e.target && e.target.getAttribute ? e.target.getAttribute('data-filter') : null;
+          if (!t) return;
+          applyFilter(t);
         });
 
-        // Initial filter from hash
-        var initial = (location.hash || '').replace('#', '').trim();
-        if (initial && map[initial]) setFilter(initial);
-        else setFilter('all');
-      })
-      .catch(function () {
-        // Fail silently (static site) but leave an empty state
+        listEl.addEventListener('click', function (e) {
+          var t = e.target && e.target.getAttribute ? e.target.getAttribute('data-filter') : null;
+          if (!t) return;
+          applyFilter(t);
+        });
+
+        applyFilter(active);
+
+        // ---- Archive UI ----
+        renderArchiveUI(base, archiveInfo);
+
+      } catch (e) {
         if (metaEl) metaEl.innerHTML = '<span class="doc-pill">Changelog unavailable</span>';
-      });
-  });
+      }
+
+      function toLabel(slug) {
+        return String(slug || '')
+          .split('-')
+          .map(function (w) { return w ? (w[0].toUpperCase() + w.slice(1)) : ''; })
+          .join(' ');
+      }
+
+      async function renderArchiveUI(base, archiveInfo) {
+        var wrap = qs('#clArchiveWrap');
+        var recentEl = qs('#clArchiveRecent');
+        var monthSel = qs('#clArchiveMonth');
+        var loadBtn = qs('#clArchiveLoad');
+        var list = qs('#clArchiveList');
+
+        if (!wrap || !recentEl || !monthSel || !loadBtn || !list) return;
+        if (!archiveInfo || !archiveInfo.enabled || !base) return;
+
+        wrap.style.display = '';
+
+        // Recently archived
+        var recent = Array.isArray(archiveInfo.recentlyArchived) ? archiveInfo.recentlyArchived : [];
+        recentEl.innerHTML = recent.length ? recent.map(renderMiniCard).join('') : '<div class="doc-sub">Nothing archived yet.</div>';
+
+        // Month index
+        var idx = Array.isArray(archiveInfo.index) ? archiveInfo.index : [];
+        if (!idx.length) {
+          try {
+            var ir = await fetch(base.replace(/\/+$/, '') + '/changelog/archive/index', { cache: 'no-store' });
+            if (ir.ok) {
+              var ij = await ir.json();
+              if (ij && ij.ok && Array.isArray(ij.months)) idx = ij.months;
+            }
+          } catch (_) {}
+        }
+
+        monthSel.innerHTML = idx.map(function (m) {
+          return '<option value="' + esc(m.month) + '">' + esc(m.month) + ' (' + esc(String(m.count || 0)) + ')</option>';
+        }).join('');
+
+        async function loadMonth() {
+          var month = monthSel.value;
+          if (!month) return;
+
+          list.innerHTML = '<div class="doc-sub">Loading…</div>';
+
+          try {
+            var r = await fetch(base.replace(/\/+$/, '') + '/changelog/archive?month=' + encodeURIComponent(month), { cache: 'no-store' });
+            if (!r.ok) throw new Error('bad');
+            var j = await r.json();
+            var entries = j && j.ok && Array.isArray(j.entries) ? j.entries : [];
+            list.innerHTML = entries.length ? entries.map(renderMiniCard).join('') : '<div class="doc-sub">No entries for this month.</div>';
+          } catch (_) {
+            list.innerHTML = '<div class="doc-sub">Archive unavailable.</div>';
+          }
+        }
+
+        loadBtn.addEventListener('click', loadMonth);
+        if (monthSel.options.length) loadMonth();
+
+        function renderMiniCard(it) {
+          var typeLabel = (it && it.type) ? String(it.type) : 'Other';
+          var cat = slugify(typeLabel) || 'other';
+          var dateStr = (it && it.date) ? String(it.date) : '';
+          var timeStr = (it && it.time) ? String(it.time) : '';
+          var stamp = dateStr ? ('Date: ' + esc(dateStr) + (timeStr ? (' • ' + esc(timeStr)) : '')) : '';
+
+          return (
+            '<article class="doc-card changelog-card" data-cat="' + esc(cat) + '" data-tags="' + esc((it.tags || []).join(',')) + '">' +
+              '<div class="doc-row">' +
+                '<div class="doc-title">' + esc(it.title || '') + '</div>' +
+                '<span class="doc-pill">Archived</span>' +
+              '</div>' +
+              (stamp ? '<div class="doc-sub" style="margin-top:6px">' + stamp + '</div>' : '') +
+              ((it && Array.isArray(it.details) && it.details.length) ? ('<ul class="doc-list" style="margin-top:10px">' +
+                it.details.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') +
+              '</ul>') : '') +
+            '</article>'
+          );
+        }
+      }
+    })();});
 })();
