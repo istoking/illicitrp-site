@@ -98,12 +98,18 @@
   <!-- Filter chips + meta (rendered from /changelog/data.json) -->
   <div id="clFilters" class="changelog-filters" aria-label="Changelog filters"></div>
   <div id="clMeta" style="margin-top:10px"></div>
+  <div class="actions" style="margin-top:12px; gap:10px; flex-wrap:wrap">
+    <a class="btn" href="#archive" id="clArchiveJump">Archive</a>
+    <a class="btn" href="/changelog/archive/">Open archive page</a>
+  </div>
+
 
   <!-- Cards are rendered dynamically so the page always matches data.json -->
   <div id="clList" class="doc-cardgrid changelog-grid" style="margin-top:14px"></div>
 
   <!-- Archive (KV-backed via worker) -->
-  <div id="clArchiveWrap" class="doc-card" style="margin-top:18px; display:none">
+  <div id="archive"></div>
+  <div id="clArchiveWrap" data-anchor="archive" class="doc-card" style="margin-top:18px; display:none">
     <div class="doc-title">Changelog Archive</div>
     <div class="doc-sub" style="margin-top:6px">
       Older changelogs are kept here automatically when new updates push them out of the main list.
