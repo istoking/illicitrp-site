@@ -905,3 +905,13 @@ a.pill.disabled{
 .btn.btn-locked{
   opacity:.78;
 }
+
+/* --- Queue page polish (button centering + consistent padding) --- */
+.queue-card .card-inner {
+  padding: 22px 24px;
+}
+
+.queue-login-row {
+  display: flex;
+  justify-content: center;
+}
