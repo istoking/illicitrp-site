@@ -48,7 +48,7 @@
 
     async function refreshMe(){
       const r = await api(base, '/api/me');
-      if(!r.ok || !r.body || r.body.ok === false){
+      if(!r.ok){
         show($('#authed'), false);
         show($('#unauthed'), true);
         btnPolice.disabled = true;
@@ -150,4 +150,21 @@
   }
 
   document.addEventListener('DOMContentLoaded', init);
-})();
+})()
+function toast(msg, ms = 3500) {
+  try {
+    let t = document.getElementById('irpToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'irpToast';
+      t.setAttribute('role', 'status');
+      t.setAttribute('aria-live', 'polite');
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.remove('show'), ms);
+  } catch {}
+}
+;

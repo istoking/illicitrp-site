@@ -879,26 +879,29 @@ a.pill.disabled{
 
 
 
-/* Queue page tweaks */
-.queue-card{max-width:920px;margin:18px auto 0;padding:22px 22px 18px}
-
-.queue-card #unauthed{display:flex;justify-content:center;align-items:center;padding:10px 0 4px}
-.queue-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
-.queue-stats{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  opacity:.92;
+/* IRP Queue toast */
+#irpToast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  max-width:min(560px, calc(100vw - 32px));
   padding:12px 14px;
-  border:1px solid var(--line);
-  background:var(--panel);
-  border-radius:14px;
+  border-radius:12px;
+  background:rgba(0,0,0,0.85);
+  color:#fff;
+  font-size:14px;
+  line-height:1.3;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+  z-index:9999;
 }
-.queue-stats span{white-space:nowrap}
-.queue-note{margin-top:10px;opacity:.92}
-.queue-subnote{margin-top:8px;opacity:.82}
-.queue-status{margin-top:12px;color:var(--muted)}
-@media (max-width:540px){
-  .queue-card{padding:18px 16px 16px}
-  .queue-stats{padding:10px 12px}
+#irpToast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(-4px);
+}
+
+.btn.btn-locked{
+  opacity:.78;
 }
