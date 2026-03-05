@@ -99,6 +99,15 @@
   <!-- Filter chips + meta (rendered from /changelog/data.json) -->
   <div id="clFilters" class="changelog-filters" aria-label="Changelog filters"></div>
   <div id="clMeta" style="margin-top:10px"></div>
+
+  <div class="docs-search" style="margin-top:14px; max-width:520px">
+    <input id="clSearch" type="search" placeholder="Search changelog (title, tags, details)" autocomplete="off" />
+    <span class="kbd">Enter</span>
+  </div>
+  <div id="clSearchMeta" class="doc-sub" style="margin-top:8px"></div>
+  <div id="clSearchResults" class="doc-cardgrid changelog-grid" style="margin-top:12px; display:none"></div>
+  <div class="doc-sub" id="clSearchHint" style="margin-top:10px; opacity:.9">Tip: search includes archived entries as well.</div>
+
 <!-- Cards are rendered dynamically so the page always matches data.json -->
   <div id="clList" class="doc-cardgrid changelog-grid" style="margin-top:14px"></div>
 

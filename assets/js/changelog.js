@@ -95,6 +95,11 @@
     var archiveLoadBtn = qs('#clArchiveLoad');
     var archiveListEl = qs('#clArchiveList');
 
+    var searchEl = qs('#clSearch');
+    var searchMetaEl = qs('#clSearchMeta');
+    var searchResultsEl = qs('#clSearchResults');
+    var searchHintEl = qs('#clSearchHint');
+
     if (!listEl || !filtersEl) return;
 
     var workerBase = '';
@@ -103,6 +108,30 @@
     function setMeta(text) {
       if (!metaEl) return;
       metaEl.innerHTML = '<span class="doc-pill">' + esc(text) + '</span>';
+    }
+
+    function setSearchMeta(html) {
+      if (!searchMetaEl) return;
+      searchMetaEl.innerHTML = html || '';
+    }
+
+    function showSearch(on) {
+      if (!searchResultsEl) return;
+      if (on) {
+        searchResultsEl.style.display = '';
+        if (listEl) listEl.style.display = 'none';
+        if (filtersEl) filtersEl.style.display = 'none';
+        if (metaEl) metaEl.style.display = 'none';
+        if (archiveWrap) archiveWrap.style.display = 'none';
+        if (searchHintEl) searchHintEl.style.display = '';
+      } else {
+        searchResultsEl.style.display = 'none';
+        if (listEl) listEl.style.display = '';
+        if (filtersEl) filtersEl.style.display = '';
+        if (metaEl) metaEl.style.display = '';
+        if (archiveWrap && typeof archiveWrap.__defaultDisplay === 'string') archiveWrap.style.display = archiveWrap.__defaultDisplay;
+        if (searchHintEl) searchHintEl.style.display = 'none';
+      }
     }
 
     function buildFilters(items) {
@@ -182,10 +211,12 @@
 
       if (!archive.enabled) {
         archiveWrap.style.display = 'none';
+        archiveWrap.__defaultDisplay = archiveWrap.style.display;
         return;
       }
 
       archiveWrap.style.display = '';
+      archiveWrap.__defaultDisplay = archiveWrap.style.display;
       // Recently archived
       if (archiveRecentEl) {
         var recent = Array.isArray(archive.recentlyArchived) ? archive.recentlyArchived : [];
@@ -235,8 +266,75 @@
         });
     }
 
+    var searchTimer = null;
+
+    function runSearch(query) {
+      var q = (query || '').trim();
+      if (!q || q.length < 2) {
+        showSearch(false);
+        setSearchMeta('');
+        if (searchResultsEl) searchResultsEl.innerHTML = '';
+        return;
+      }
+      if (!workerBase) return;
+
+      showSearch(true);
+      setSearchMeta('Searching…');
+      if (searchResultsEl) searchResultsEl.innerHTML = '';
+
+      var month = '';
+      if (archiveMonthSel && /^\d{4}-\d{2}$/.test(archiveMonthSel.value || '')) {
+        // On the archive page, keep searches scoped to the selected month for better signal.
+        if (location.pathname.indexOf('/changelog/archive') === 0) month = archiveMonthSel.value;
+      }
+
+      var url = workerBase.replace(/\/+$/, '') + '/changelog/search?q=' + encodeURIComponent(q) + '&limit=50' + (month ? ('&month=' + encodeURIComponent(month)) : '');
+      fetch(url, { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (payload) {
+          if (!payload || !payload.ok) throw new Error((payload && payload.error) || 'Search failed');
+          var items = Array.isArray(payload.results) ? payload.results : [];
+          setSearchMeta(
+            '<span class="doc-pill">Matches: ' + esc(String(payload.totalMatches || items.length)) + '</span> ' +
+            '<span class="doc-pill">Showing: ' + esc(String(items.length)) + '</span>' +
+            (payload.month ? (' <span class="doc-pill">Month: ' + esc(payload.month) + '</span>') : '')
+          );
+          searchResultsEl.innerHTML = items.length
+            ? items.map(function (it) { return renderEntryCard(it); }).join('')
+            : '<div class="doc-card"><div class="doc-title">No matches</div><div class="doc-sub" style="margin-top:6px">Try a different keyword.</div></div>';
+          bindInlineFilterClicks(searchResultsEl);
+        })
+        .catch(function (e) {
+          setSearchMeta('<span class="doc-pill">Search unavailable</span>');
+          searchResultsEl.innerHTML = '<div class="doc-card"><div class="doc-title">Search unavailable</div><div class="doc-sub" style="margin-top:6px">' + esc(String(e && e.message || e)) + '</div></div>';
+        });
+    }
+
+    function bindSearch() {
+      if (!searchEl) return;
+      showSearch(false);
+
+      searchEl.addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () { runSearch(searchEl.value); }, 150);
+      });
+
+      searchEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          runSearch(searchEl.value);
+        }
+        if (e.key === 'Escape') {
+          searchEl.value = '';
+          runSearch('');
+        }
+      });
+    }
+
     function boot() {
       setMeta('Loading changelog…');
+
+      bindSearch();
 
       fetch('/status.json', { cache: 'no-store' })
         .then(function (r) { return r.json(); })
