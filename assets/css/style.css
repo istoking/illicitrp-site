@@ -915,3 +915,11 @@ a.pill.disabled{
   display: flex;
   justify-content: center;
 }
+
+/* Hide Queue links site-wide (temporary) */
+a[href="/queue"], a[href="/queue/"], a[href^="/queue?"] { display: none !important; }
+
+
+/* Hide web queue navigation site-wide (temporarily) */
+a[href^="/queue"], a[href^="/queue/"] { display: none !important; }
+a[href*="/queue"], a[href*="/queue/"] { display: none !important; }
