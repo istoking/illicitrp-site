@@ -104,6 +104,7 @@
 
     var workerBase = '';
     var lastUpdated = null;
+    var isArchivePage = (location.pathname.indexOf('/changelog/archive') === 0);
 
     function setMeta(text) {
       if (!metaEl) return;
@@ -342,15 +343,63 @@
           var base = status && status.worker && status.worker.base ? String(status.worker.base) : '';
           if (!base) throw new Error('Missing worker base in /status.json');
           workerBase = base.replace(/\/+$/, '');
+
+          // Archive page: load only archived entries (everything except latest CHANGELOG_LIMIT)
+          if (isArchivePage) {
+            return fetch(workerBase + '/changelog/archive/index', { cache: 'no-store' })
+              .then(function (r) { return r.json(); })
+              .then(function (idx) {
+                if (!idx || !idx.ok || !Array.isArray(idx.months) || !idx.months.length) {
+                  throw new Error('Archive index unavailable');
+                }
+
+                // Choose month from URL (?month=YYYY-MM) or default to newest month.
+                var params = new URLSearchParams(location.search || '');
+                var month = params.get('month');
+                if (!month || !/^\d{4}-\d{2}$/.test(month)) month = String(idx.months[0].month || '');
+
+                if (!month || !/^\d{4}-\d{2}$/.test(month)) {
+                  throw new Error('Archive month unavailable');
+                }
+
+                // Update selector if present
+                if (archiveMonthSel) {
+                  archiveMonthSel.innerHTML = idx.months.map(function (m) {
+                    var mm = String(m.month || '');
+                    var c = Number(m.count || 0);
+                    var sel = (mm === month) ? ' selected' : '';
+                    return '<option value="' + esc(mm) + '"' + sel + '>' + esc(mm) + ' (' + c + ')</option>';
+                  }).join('');
+                }
+
+                // Persist month in URL for shareability
+                try {
+                  if (params.get('month') !== month) {
+                    params.set('month', month);
+                    var next = location.pathname + '?' + params.toString();
+                    history.replaceState(null, '', next);
+                  }
+                } catch (e) {}
+
+                return fetch(workerBase + '/changelog/archive?month=' + encodeURIComponent(month), { cache: 'no-store' });
+              });
+          }
+
+          // Main changelog page: latest 10
           return fetch(workerBase + '/changelog', { cache: 'no-store' });
         })
         .then(function (r) { return r.json(); })
         .then(function (payload) {
-          if (!payload || !payload.ok) throw new Error((payload && payload.error) || 'Worker changelog error');
+          if (!payload || !payload.ok) throw new Error((payload && payload.error) || 'Changelog fetch failed');
 
           lastUpdated = payload.updatedAt || null;
 
-          var items = (payload && payload.entries) ? payload.entries : [];
+          // /changelog (main) returns latest entries; /changelog/archive returns archived-only entries.
+          var items = Array.isArray(payload.entries) ? payload.entries : [];
+          if (isArchivePage) {
+            var monthText = payload.month ? String(payload.month) : '';
+            setMeta('Archive' + (monthText ? (': ' + monthText) : '') + ' • Showing: ' + items.length + (lastUpdated ? (' • Updated: ' + String(lastUpdated).slice(0, 10)) : ''));
+          }
           items = (items || []).slice().sort(function (a, b) {
             return String(b.date || '').localeCompare(String(a.date || ''));
           });
