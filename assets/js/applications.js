@@ -1,7 +1,10 @@
 (function(){
-  function esc(s){ return (s||'').toString().trim(); }
+  // Applications: direct-submit to Worker endpoints
+  // Pages:
+  //  - /applications/server-whitelist.html  -> POST /applications/server
+  //  - /applications/whitelisted-job.html   -> POST /applications/job
+  //  - /applications/staff.html            -> POST /applications/staff
 
-  // Site config (kept in /status.json so it is easy to change without touching multiple pages)
   var SITE_CFG = null;
 
   async function fetchFirstJson(paths){
@@ -10,28 +13,20 @@
         var r = await fetch(paths[i], { cache: 'no-store' });
         if(!r.ok) continue;
         return await r.json();
-      }catch(e){
-        // keep trying
-      }
+      }catch(_){}
     }
     return {};
   }
 
   async function loadSiteConfig(){
     if(SITE_CFG !== null) return SITE_CFG;
-    try{
-      // Support GitHub Pages sub-path deployments (e.g. /repo/...) by trying relative fallbacks.
-      SITE_CFG = await fetchFirstJson([
-        '/status.json',
-        '../status.json',
-        './status.json',
-        '../../status.json'
-      ]);
-      return SITE_CFG;
-    }catch(e){
-      SITE_CFG = {};
-      return SITE_CFG;
-    }
+    SITE_CFG = await fetchFirstJson([
+      '/status.json',
+      '../status.json',
+      './status.json',
+      '../../status.json'
+    ]);
+    return SITE_CFG;
   }
 
   async function loadWorkerBase(){
@@ -40,202 +35,132 @@
     return base;
   }
 
-  async function getSupportHref(){
-    var cfg = await loadSiteConfig();
-    var invite = (cfg && cfg.discord && cfg.discord.invite) ? String(cfg.discord.invite) : 'https://discord.gg/xXru9PEFdg';
-    var guildId = (cfg && cfg.discord && cfg.discord.guild_id) ? String(cfg.discord.guild_id) : '';
-    var channelId = (cfg && cfg.discord && cfg.discord.support_channel_id) ? String(cfg.discord.support_channel_id) : '';
-    if(guildId && channelId){
-      return 'https://discord.com/channels/' + guildId + '/' + channelId;
-    }
-    return invite;
-  }
-  function makeBlock(title, fields){
-    var out = [];
-    out.push('**' + title + '**');
-    out.push('');
-    fields.forEach(function(f){
-      out.push('**' + f.label + ':** ' + (f.value || ''));
-      if(f.multiline && f.value){
-        out.push('');
-        out.push('```');
-        out.push(f.value);
-        out.push('```');
-      }
-    });
-    return out.join('\n');
-  }
-
-  function copyToClipboard(text){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      return navigator.clipboard.writeText(text);
-    }
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.left = '-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    return Promise.resolve();
-  }
-
-  // Render immediately so the UI always opens, even if config fetch is slow/hangs.
-  function renderOutput(targetEl, text, payload){
-    targetEl.style.display = 'block';
-    targetEl.innerHTML = [
-      '<div class="result" style="cursor:default">',
-        '<strong>Submission generated</strong>',
-        '<span>Copy to clipboard will also submit your application to staff.</span>',
-        '<div class="actions" style="margin-top:12px">',
-          '<button class="btn primary" id="copyBtn">Copy to Clipboard</button>',
-          '<a class="btn" id="supportBtn" target="_blank" rel="noopener">Open Discord Support</a>',
-        '</div>',
-        '<div class="muted" id="submitMsg" style="margin-top:10px; display:none;"></div>',
-        '<pre style="white-space:pre-wrap; margin-top:12px; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:12px; background: rgba(0,0,0,.18)"></pre>',
+  function showMsg(el, ok, title, text){
+    if(!el) return;
+    el.style.display = 'block';
+    el.innerHTML = [
+      '<div class="result">',
+        '<strong>' + escapeHtml(title) + '</strong>',
+        '<span>' + escapeHtml(text) + '</span>',
       '</div>'
     ].join('');
-    targetEl.querySelector('pre').textContent = text;
+    el.classList.toggle('ok', !!ok);
+  }
 
-    // Support link (channel deep-link when available, otherwise invite)
-    var supportBtn = targetEl.querySelector('#supportBtn');
-    supportBtn.href = 'https://discord.gg/xXru9PEFdg';
-    supportBtn.title = 'Opens the IRP Discord support channel. If you are not in the server yet, you may be prompted to join.';
-    // Update href asynchronously once config is loaded (non-blocking)
-    getSupportHref().then(function(href){
-      if(href) supportBtn.href = href;
-    }).catch(function(){});
-
-    var msgEl = targetEl.querySelector('#submitMsg');
-    var copyBtn = targetEl.querySelector('#copyBtn');
-    copyBtn.addEventListener('click', function(){
-      copyBtn.disabled = true;
-      msgEl.style.display = 'block';
-      msgEl.textContent = 'Copying to clipboard…';
-      copyToClipboard(text).then(function(){
-        copyBtn.textContent = 'Copied';
-        // Clipboard success should not be treated as a submission failure.
-        msgEl.textContent = 'Copied to clipboard. Submitting to staff…';
-        return submitToStaff(payload, msgEl);
-      }).catch(function(){
-        msgEl.textContent = 'Copy failed. Please manually select the text below and copy it, then use Open Discord Support.';
-      }).finally(function(){
-        copyBtn.disabled = false;
-        setTimeout(function(){ copyBtn.textContent = 'Copy to Clipboard'; }, 1500);
-      });
+  function escapeHtml(s){
+    return String(s || '').replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
     });
   }
 
-  async function submitToStaff(payload, msgEl){
+  function formToObject(form){
+    var obj = {};
+    Array.prototype.forEach.call(form.elements, function(el){
+      if(!el.name) return;
+      if(el.type === 'submit') return;
+      if(el.type === 'checkbox'){
+        obj[el.name] = !!el.checked;
+        return;
+      }
+      obj[el.name] = (el.value || '').toString().trim();
+    });
+    return obj;
+  }
+
+  function enforceMinLengths(form){
+    // If minlength is present, ensure it is met (some browsers are lax on textarea)
+    var bad = null;
+    Array.prototype.forEach.call(form.querySelectorAll('[minlength]'), function(el){
+      var min = parseInt(el.getAttribute('minlength') || '0', 10);
+      if(!min) return;
+      var v = (el.value || '').trim();
+      if(v.length < min){
+        bad = bad || el;
+      }
+    });
+    if(bad){
+      bad.focus();
+      bad.scrollIntoView({ behavior:'smooth', block:'center' });
+      return false;
+    }
+    return true;
+  }
+
+  async function submit(endpoint, payload, msgEl){
     var base = await loadWorkerBase();
     if(!base){
-      msgEl.style.display = 'block';
-      msgEl.textContent = 'Copied to clipboard. Auto-submit is not configured yet — please use Open Discord Support and submit via a ticket.';
+      showMsg(msgEl, false, 'Submit failed', 'Worker base is not configured (status.json missing worker.base).');
       return;
     }
-    msgEl.style.display = 'block';
-    msgEl.textContent = 'Submitting to staff…';
 
+    showMsg(msgEl, true, 'Submitting…', 'Sending your application to staff.');
     try{
-      var r = await fetch(base + '/apply', {
+      var r = await fetch(base + endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type':'application/json' },
         body: JSON.stringify(payload)
       });
-      // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
       var j = null;
-      try { j = await r.json(); } catch(_) {}
-      var ok = !!r.ok;
-      if(j && typeof j === 'object'){
-        if(j.ok === true || j.success === true) ok = true;
-        else if('ok' in j || 'success' in j) ok = false;
+      try{ j = await r.json(); }catch(_){}
+      if(r.ok && (!j || j.ok === true || j.success === true)){
+        showMsg(msgEl, true, 'Submitted', 'Application sent. Staff will review and contact you via Discord if needed.');
+      }else{
+        showMsg(msgEl, false, 'Submit failed', (j && j.error) ? String(j.error) : 'Request failed. Please try again later.');
       }
-
-      if(ok) msgEl.textContent = 'Copied to clipboard. Submitted to staff successfully.';
-      else msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
     }catch(e){
-      msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
+      showMsg(msgEl, false, 'Submit failed', 'Network error. Please try again later.');
     }
   }
 
-  function initJoin(){
-    var btn = document.getElementById('appBuild');
-    if(!btn) return;
-    btn.addEventListener('click', function(){
-      var fields = [
-        {label:'Discord', value:esc(document.getElementById('a_discord').value)},
-        {label:'Timezone', value:esc(document.getElementById('a_tz').value)},
-        {label:'Age bracket', value:esc(document.getElementById('a_age').value)},
-        {label:'RP experience', value:esc(document.getElementById('a_exp').value)},
-        {label:'Character concept', value:esc(document.getElementById('q_char').value), multiline:true},
-        {label:'Handling loss', value:esc(document.getElementById('q_loss').value), multiline:true},
-        {label:'Conflict and escalation', value:esc(document.getElementById('q_escalation').value), multiline:true},
-        {label:'Mechanical issues mid-scene', value:esc(document.getElementById('q_mech').value), multiline:true},
-        {label:'Accountability', value:esc(document.getElementById('q_account').value), multiline:true},
-        {label:'Staff interaction', value:esc(document.getElementById('q_staff').value), multiline:true},
-        {label:'Final note', value:esc(document.getElementById('q_final').value), multiline:true},
-      ];
-      var text = makeBlock('IRP Join Application', fields);
-      var out = document.getElementById('appOutWrap');
+  function initServer(){
+    var form = document.getElementById('appServerForm');
+    if(!form) return;
+    var msgEl = document.getElementById('appServerMsg');
 
-      var payload = {
-        type: 'Join Application',
-        name: esc(document.getElementById('a_name') ? document.getElementById('a_name').value : ''),
-        discord: esc(document.getElementById('a_discord').value),
-        timezone: esc(document.getElementById('a_tz').value),
-        age_bracket: esc(document.getElementById('a_age').value),
-        rp_experience: esc(document.getElementById('a_exp').value),
-        character_concept: esc(document.getElementById('q_char').value),
-        handling_loss: esc(document.getElementById('q_loss').value),
-        conflict_escalation: esc(document.getElementById('q_escalation').value),
-        mechanical_issues: esc(document.getElementById('q_mech').value),
-        accountability: esc(document.getElementById('q_account').value),
-        staff_interaction: esc(document.getElementById('q_staff').value),
-        final_note: esc(document.getElementById('q_final').value)
-      };
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!form.reportValidity()) return;
+      if(!enforceMinLengths(form)) return;
 
-      renderOutput(out, text, payload);
+      var data = formToObject(form);
+      data.type = 'server';
+      submit('/applications/server', data, msgEl);
     });
   }
 
-  function initWhitelist(){
-    var btn = document.getElementById('wlBuild');
-    if(!btn) return;
-    btn.addEventListener('click', function(){
-      var fields = [
-        {label:'Discord', value:esc(document.getElementById('w_discord').value)},
-        {label:'Role', value:esc(document.getElementById('w_role').value)},
-        {label:'Why this role', value:esc(document.getElementById('w_why').value), multiline:true},
-        {label:'Under pressure', value:esc(document.getElementById('w_pressure').value), multiline:true},
-        {label:'Neutrality and professionalism', value:esc(document.getElementById('w_neutral').value), multiline:true},
-        {label:'Knowledge check', value:esc(document.getElementById('w_knowledge').value), multiline:true},
-        {label:'Availability', value:esc(document.getElementById('w_avail').value), multiline:true},
-      ];
-      var text = makeBlock('IRP Whitelist Application', fields);
-      var out = document.getElementById('wlOutWrap');
+  function initJob(){
+    var form = document.getElementById('appJobForm');
+    if(!form) return;
+    var msgEl = document.getElementById('appJobMsg');
 
-      var payload = {
-        type: 'Whitelist Application',
-        name: esc(document.getElementById('w_name') ? document.getElementById('w_name').value : ''),
-        discord: esc(document.getElementById('w_discord').value),
-        role: esc(document.getElementById('w_role').value),
-        why_this_role: esc(document.getElementById('w_why').value),
-        under_pressure: esc(document.getElementById('w_pressure').value),
-        neutrality_professionalism: esc(document.getElementById('w_neutral').value),
-        knowledge_check: esc(document.getElementById('w_knowledge').value),
-        availability: esc(document.getElementById('w_avail').value)
-      };
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!form.reportValidity()) return;
+      if(!enforceMinLengths(form)) return;
 
-      renderOutput(out, text, payload);
+      var data = formToObject(form);
+      data.type = 'job';
+      submit('/applications/job', data, msgEl);
     });
   }
 
-  function init(){
-    initJoin();
-    initWhitelist();
+  function initStaff(){
+    var form = document.getElementById('appStaffForm');
+    if(!form) return;
+    var msgEl = document.getElementById('appStaffMsg');
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!form.reportValidity()) return;
+      if(!enforceMinLengths(form)) return;
+
+      var data = formToObject(form);
+      data.type = 'staff';
+      submit('/applications/staff', data, msgEl);
+    });
   }
 
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  initServer();
+  initJob();
+  initStaff();
 })();

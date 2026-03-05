@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Server Whitelist Application</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#0b0f14">
+
+</head>
+<body>
+<header class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo.png" alt="Illicit Roleplay logo" />
+        <div>
+          <div class="title">Illicit Roleplay</div>
+          <div class="sub">IRP • Serious RP</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+<div class="nav-panel" id="navPanel">
+<div class="dropdown">
+          <details>
+            <summary class="pill">SOPs</summary>
+            <div class="dropdown-menu">
+              <a href="/sops/">
+                SOP Library <span>• all SOPs</span>
+              </a>
+              <a href="/sops/civilian.html">
+                Civilian SOP <span>• IC conduct</span>
+              </a>
+              <a href="/sops/gang.html">
+                Gang SOP <span>• escalation</span>
+              </a>
+              <a href="/sops/leo-ems.html">
+                LEO / EMS SOP <span>• professionalism</span>
+              </a>
+              <a href="/sops/staff-admin.html">
+                Staff / Admin SOP <span>• tickets</span>
+              </a>
+            </div>
+          </details>
+        </div>
+        <a class="pill" href="/docs/">Docs</a>
+        <a class="pill" href="/applications/">Applications</a>
+<div class="dropdown">
+          <details>
+            <summary class="pill">Community</summary>
+            <div class="dropdown-menu">
+              <a href="/handbook/">
+                Handbook <span>• rules and reporting</span>
+              </a>
+              <a href="/changelog/">
+                Changelog <span>• updates and patches</span>
+              </a>
+              
+              <a href="/changelog/archive/">
+                Changelog Archive <span>• older updates</span>
+              </a>
+<a href="/announcements/">
+                Announcements <span>• staff posts</span>
+              </a>
+              <a href="/status/">
+                Status <span>• live services</span>
+              </a>
+            </div>
+          </details>
+        </div>
+       <a class="pill" href="/queue/">Queue</a>
+        <a class="pill" href="/downloads/">Downloads</a>
+        <a class="pill" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
+</div>
+</nav>
+    </div>
+  </div>
+</header>
+
+<main class="container wide">
+  <div class="breadcrumb">Home / Applications / Server</div>
+
+<section class="doc">
+  <h1>Server Whitelist Application</h1>
+  <p>IRP is <b>roleplay before gunplay</b>. Escalation should be earned, and even in gunfights there should be believable off-ramps where people can survive.</p>
+
+  <div class="callout">
+    <b>Privacy note:</b> This application helps staff understand your roleplay mindset and decision-making. It is not a medical or clinical assessment.
+  </div>
+
+  <form id="appServerForm" class="formgrid full" autocomplete="off">
+    <div class="formgrid">
+      <div class="field">
+        <label>Discord (required)</label>
+        <input name="discord" required minlength="3" maxlength="64" placeholder="name / @name" />
+      </div>
+      <div class="field">
+        <label>Timezone</label>
+        <select name="timezone" required>
+          <option value="">Select</option>
+          <option>Pacific/Auckland</option>
+          <option>Australia/Sydney</option>
+          <option>America/Los_Angeles</option>
+          <option>America/New_York</option>
+          <option>Europe/London</option>
+          <option>Europe/Berlin</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Age bracket</label>
+        <select name="age" required>
+          <option value="">Select</option>
+          <option>18–20</option>
+          <option>21–25</option>
+          <option>26–30</option>
+          <option>31–40</option>
+          <option>41+</option>
+          <option>Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+
+    <h2 style="margin-top:10px">Mindset (compact, high-signal)</h2>
+    <div class="formgrid">
+      <div class="field">
+        <label>What are you here for?</label>
+        <select name="primary_goal" required>
+          <option value="">Select</option>
+          <option>Long-form character stories</option>
+          <option>Community & relationships</option>
+          <option>Business/civilian life</option>
+          <option>Crime arcs (slow-burn)</option>
+          <option>Mixed / exploring</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How do you handle losing?</label>
+        <select name="loss_style" required>
+          <option value="">Select</option>
+          <option>I accept outcomes and build story from it</option>
+          <option>I’m competitive but can take Ls</option>
+          <option>I struggle sometimes but I’m improving</option>
+          <option>I avoid conflict-heavy scenes</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Conflict style under pressure</label>
+        <select name="conflict_style" required>
+          <option value="">Select</option>
+          <option>De-escalate and communicate</option>
+          <option>Stay calm and follow process</option>
+          <option>Match energy (but keep it IC)</option>
+          <option>I can get heated (working on it)</option>
+        </select>
+      </div>
+    </div>
+
+    <h2 style="margin-top:10px">Escalation & gunplay philosophy</h2>
+    <div class="formgrid">
+      <div class="field">
+        <label>Gunplay should be…</label>
+        <select name="gunplay" required>
+          <option value="">Select</option>
+          <option>The final resort, after RP options are exhausted</option>
+          <option>Rare, but acceptable if the story supports it</option>
+          <option>Sometimes necessary, but I prefer non-lethal outcomes</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>After gunplay, survivability should…</label>
+        <select name="survivability" required>
+          <option value="">Select</option>
+          <option>Usually be possible (escape/medical/IC consequences)</option>
+          <option>Be possible if choices allow it</option>
+          <option>Be rare (death is common)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>What do you value most in a scene?</label>
+        <select name="scene_value" required>
+          <option value="">Select</option>
+          <option>Believability and stakes</option>
+          <option>Everyone having fun</option>
+          <option>Consequences and continuity</option>
+          <option>Clean communication</option>
+        </select>
+      </div>
+    </div>
+
+    <h2 style="margin-top:10px">Scenario judgement (short answers)</h2>
+    <div class="field">
+      <label>1) Someone baits you into an argument mid-scene. What do you do?</label>
+      <textarea name="s_bait" required minlength="40" maxlength="700" placeholder="Keep it IC, keep it fun, avoid OOC escalation."></textarea>
+    </div>
+    <div class="field">
+      <label>2) You lose badly (robbed/arrested). What does a “good loss” look like after?</label>
+      <textarea name="s_loss" required minlength="40" maxlength="700"></textarea>
+    </div>
+    <div class="field">
+      <label>3) You think someone broke a rule, but you’re not sure. What’s your move?</label>
+      <textarea name="s_rules" required minlength="40" maxlength="700"></textarea>
+    </div>
+
+    <h2 style="margin-top:10px">Character intent (brief)</h2>
+    <div class="formgrid">
+      <div class="field">
+        <label>Preferred lane</label>
+        <select name="lane" required>
+          <option value="">Select</option>
+          <option>Civilian / business</option>
+          <option>Crime (slow-burn)</option>
+          <option>LEO/EMS later (if approved)</option>
+          <option>Mixed</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Comfort with consequences</label>
+        <select name="consequences" required>
+          <option value="">Select</option>
+          <option>I like consequences and continuity</option>
+          <option>Some consequences, not too heavy</option>
+          <option>I’m still learning consequence RP</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Character concept (8–12 sentences)</label>
+      <textarea name="character" required minlength="80" maxlength="1200" placeholder="Who are they, what do they want, and what would change them?"></textarea>
+    </div>
+
+    <div class="actions" style="margin-top:16px">
+      <button class="btn primary" type="submit">Submit Application</button>
+      <a class="btn" href="/applications/">Back</a>
+    </div>
+
+    <div id="appServerMsg" class="docs-results open" style="margin-top:14px; display:none"></div>
+  </form>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages / Cloudflare Pages.</div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.querySelector('.nav-toggle');
+  var panel = document.getElementById('navPanel');
+  if(!btn || !panel) return;
+
+  function closeMenu(){
+    panel.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  }
+
+  btn.addEventListener('click', function(){
+    var open = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Close on outside click (mobile)
+  document.addEventListener('click', function(e){
+    if (!panel.classList.contains('open')) return;
+    if (panel.contains(e.target) || btn.contains(e.target)) return;
+    closeMenu();
+  });
+
+  // Close when selecting a link
+  panel.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+})();
+</script>
+
+  <script src="/assets/js/docs.js"></script>
+  <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/applications.js"></script>
+</body>
+</html>

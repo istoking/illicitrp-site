@@ -373,22 +373,7 @@
           applyFilter(active);
 
           // Archive
-          (function () {
-            var arch = payload.archive || { enabled: false };
-            // If the main endpoint didn't include the month index (e.g. last_good fallback),
-            // fetch it from the dedicated index endpoint so archives still render.
-            if (arch && arch.enabled && (!Array.isArray(arch.index) || arch.index.length === 0)) {
-              fetch(workerBase + '/changelog/archive/index', { cache: 'no-store' })
-                .then(function (r) { return r.json(); })
-                .then(function (idx) {
-                  if (idx && idx.ok && Array.isArray(idx.months)) arch.index = idx.months;
-                  renderArchive(arch);
-                })
-                .catch(function () { renderArchive(arch); });
-            } else {
-              renderArchive(arch);
-            }
-          })();
+          renderArchive(payload.archive || { enabled: false });
 
           if (archiveLoadBtn && archiveMonthSel) {
             archiveLoadBtn.addEventListener('click', function () {

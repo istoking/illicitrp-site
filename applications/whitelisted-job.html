@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0f14" />
-  <title>About IRP</title>
+  <title>Whitelisted Job Application</title>
   <link rel="stylesheet" href="/assets/css/style.css" />
 
     <!-- Favicons -->
@@ -90,49 +90,105 @@
   </div>
 </header>
 
-<main class="container">
-  <div class="breadcrumb">Home / Docs / About</div>
-  <section class="doc">
-  <h1>About Illicit Roleplay</h1>
-  <p>Illicit Roleplay (IRP) is a serious roleplay community built around long-term character development, immersive scenes, and consistent enforcement. We focus on strong storytelling, respectful player conduct, and roleplay outcomes that feel earned.</p>
+<main class="container wide">
+  <div class="breadcrumb">Home / Applications / Job</div>
 
-  <div class="callout">
-    <b>Our mission:</b> create an immersive city where choices matter, actions have consequences, and every player has room to build a meaningful story.
-  </div>
+<section class="doc">
+  <h1>Whitelisted Job Application</h1>
+  <p>Whitelisted roles require calm judgment, consistency, and the ability to create RP for others — not just “win”.</p>
 
-  <h2>What we value</h2>
-  <ul>
-    <li><b>Scene integrity:</b> stay in character, respect outcomes, and let moments breathe.</li>
-    <li><b>Respect:</b> firm rules, calm conversations, and zero drama escalation.</li>
-    <li><b>Consistency:</b> clear SOPs, clear expectations, and fair enforcement.</li>
-    <li><b>Quality:</b> optimized systems, stable resources, and professional operations.</li>
-  </ul>
-
-  <h2>Server identity</h2>
-  <div class="list" style="margin-top:14px">
-    <div class="item">
-      <div class="dot"></div>
-      <div>
-        <strong>Serious RP</strong>
-        <span>Character-first roleplay, realistic pacing, meaningful stakes.</span>
+  <form id="appJobForm" class="formgrid full" autocomplete="off">
+    <div class="formgrid">
+      <div class="field">
+        <label>Discord (required)</label>
+        <input name="discord" required minlength="3" maxlength="64" placeholder="name / @name" />
+      </div>
+      <div class="field">
+        <label>Role</label>
+        <select name="role" required>
+          <option value="">Select</option>
+          <option>Police</option>
+          <option>EMS</option>
+          <option>Mechanic</option>
+          <option>Tow</option>
+          <option>Taxi</option>
+          <option>Legal</option>
+          <option>Government</option>
+          <option>Business Ownership</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Weekly availability</label>
+        <select name="availability" required>
+          <option value="">Select</option>
+          <option>2–5 hours</option>
+          <option>6–10 hours</option>
+          <option>11–20 hours</option>
+          <option>20+ hours</option>
+        </select>
       </div>
     </div>
-    <div class="item">
-      <div class="dot"></div>
-      <div>
-        <strong>Rules enforced</strong>
-        <span>Clear standards, consistent tickets, and professional moderation.</span>
+
+    <div class="formgrid">
+      <div class="field">
+        <label>Authority mindset</label>
+        <select name="authority" required>
+          <option value="">Select</option>
+          <option>Service-first (help the scene)</option>
+          <option>Process-first (SOP consistency)</option>
+          <option>Story-first (build arcs)</option>
+          <option>Balance (scene + SOP)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>De-escalation style</label>
+        <select name="deescalation" required>
+          <option value="">Select</option>
+          <option>Calm verbal control</option>
+          <option>Listen first, then direct</option>
+          <option>Firm boundaries</option>
+          <option>I’m still learning de-escalation</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Fairness under pressure</label>
+        <select name="fairness" required>
+          <option value="">Select</option>
+          <option>I stay consistent even with friends</option>
+          <option>I can be consistent with reminders/checklists</option>
+          <option>I’m improving my consistency</option>
+        </select>
       </div>
     </div>
-    <div class="item">
-      <div class="dot"></div>
-      <div>
-        <strong>Performance focused</strong>
-        <span>Low-impact resources, optimized UI, and production-grade scripts.</span>
-      </div>
+
+    <div class="field">
+      <label>Why this role — in one paragraph</label>
+      <textarea name="why" required minlength="60" maxlength="900"></textarea>
     </div>
-  </div>
+
+    <h2 style="margin-top:10px">Scenario judgement</h2>
+    <div class="field">
+      <label>1) A player is angry and trying to rush/skip RP. How do you keep it productive?</label>
+      <textarea name="s_rush" required minlength="50" maxlength="700"></textarea>
+    </div>
+    <div class="field">
+      <label>2) A colleague is acting out of standard. What do you do?</label>
+      <textarea name="s_colleague" required minlength="50" maxlength="700"></textarea>
+    </div>
+    <div class="field">
+      <label>3) In your role, how do you keep gunplay as the last resort while still maintaining authority?</label>
+      <textarea name="s_gunplay" required minlength="50" maxlength="700"></textarea>
+    </div>
+
+    <div class="actions" style="margin-top:16px">
+      <button class="btn primary" type="submit">Submit Application</button>
+      <a class="btn" href="/applications/">Back</a>
+    </div>
+
+    <div id="appJobMsg" class="docs-results open" style="margin-top:14px; display:none"></div>
+  </form>
 </section>
+
 </main>
 <footer class="footer">
   <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages / Cloudflare Pages.</div>
@@ -170,5 +226,6 @@
 
   <script src="/assets/js/docs.js"></script>
   <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/applications.js"></script>
 </body>
 </html>

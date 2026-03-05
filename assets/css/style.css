@@ -916,10 +916,6 @@ a.pill.disabled{
   justify-content: center;
 }
 
-/* Hide Queue links site-wide (temporary) */
-a[href="/queue"], a[href="/queue/"], a[href^="/queue?"] { display: none !important; }
 
-
-/* Hide web queue navigation site-wide (temporarily) */
+/* Hide Queue UI site-wide (queue system remains active server-side) */
 a[href^="/queue"], a[href^="/queue/"] { display: none !important; }
-a[href*="/queue"], a[href*="/queue/"] { display: none !important; }
