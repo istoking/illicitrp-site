@@ -14,7 +14,7 @@
     "type": "Website",
     "title": "Global search and status banner",
     "details": [
-      "Ctrl K global search across docs, SOPs, handbook, downloads, changelog.",
+      "Global search across docs, SOPs, handbook, downloads, changelog.",
       "Sticky status banner reads status.json and shows quick actions.",
       "Changelog and support are one click away from every page."
     ]

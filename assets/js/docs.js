@@ -24,9 +24,7 @@
     '<div class="title"><strong>IRP Docs</strong><span class="doc-pill">Free and hosted</span></div>',
     '<div class="docs-tools">',
       '<div class="docs-search">',
-        '<input id="docsSearch" type="search" placeholder="Search documentation" autocomplete="off" />',
-        '<span class="kbd">Ctrl K</span>',
-      '</div>',
+        '<input id="docsSearch" type="search" placeholder="Search documentation" autocomplete="off" />',      '</div>',
     '</div>',
     '<div id="docsNav"></div>',
     '<div id="docsResults" class="docs-results"></div>'
@@ -116,10 +114,6 @@
     });
 
     document.addEventListener('keydown', function(e){
-      if((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')){
-        e.preventDefault();
-        inputEl.focus();
-      }
       if(e.key === 'Escape'){
         openResults(false);
         inputEl.blur();

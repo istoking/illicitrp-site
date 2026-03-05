@@ -131,7 +131,7 @@
     btn.type = 'button';
     btn.className = 'btn mini';
     btn.id = 'irpSearchOpen';
-    btn.innerHTML = 'Search <span class="kbd">Ctrl K</span>';
+    btn.innerHTML = 'Search';
 
     if(nav){
       nav.appendChild(btn);
@@ -299,9 +299,8 @@
 
   function init(){
     // Status banner disabled (was /status.json driven)
-    injectSearchButton();
-    createSearchModal();
-    wireSearch();
+    // Global search (Ctrl+K) removed — changelog uses real server-side search.
+
     enhanceBreadcrumbs();
     wireDropdowns();
     updateSupportLinks();
