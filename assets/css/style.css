@@ -915,3 +915,8 @@ a.pill.disabled{
   display: flex;
   justify-content: center;
 }
+
+
+/* Hide Queue links site-wide (queue feature temporarily disabled) */
+a[href='/queue/'], a[href='/queue'] { display: none !important; }
+.queue, .queue-btn, .queue-button, [data-queue] { display: none !important; }
