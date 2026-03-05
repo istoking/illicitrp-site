@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Staff Application</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#0b0f14">
+
+</head>
+<body>
+<header class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo.png" alt="Illicit Roleplay logo" />
+        <div>
+          <div class="title">Illicit Roleplay</div>
+          <div class="sub">IRP • Serious RP</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</button>
+<div class="nav-panel" id="navPanel">
+<div class="dropdown">
+          <details>
+            <summary class="pill">SOPs</summary>
+            <div class="dropdown-menu">
+              <a href="/sops/">
+                SOP Library <span>• all SOPs</span>
+              </a>
+              <a href="/sops/civilian.html">
+                Civilian SOP <span>• IC conduct</span>
+              </a>
+              <a href="/sops/gang.html">
+                Gang SOP <span>• escalation</span>
+              </a>
+              <a href="/sops/leo-ems.html">
+                LEO / EMS SOP <span>• professionalism</span>
+              </a>
+              <a href="/sops/staff-admin.html">
+                Staff / Admin SOP <span>• tickets</span>
+              </a>
+            </div>
+          </details>
+        </div>
+        <a class="pill" href="/docs/">Docs</a>
+        <a class="pill" href="/applications/">Applications</a>
+<div class="dropdown">
+          <details>
+            <summary class="pill">Community</summary>
+            <div class="dropdown-menu">
+              <a href="/handbook/">
+                Handbook <span>• rules and reporting</span>
+              </a>
+              <a href="/changelog/">
+                Changelog <span>• updates and patches</span>
+              </a>
+              
+              <a href="/changelog/archive/">
+                Changelog Archive <span>• older updates</span>
+              </a>
+<a href="/announcements/">
+                Announcements <span>• staff posts</span>
+              </a>
+              <a href="/status/">
+                Status <span>• live services</span>
+              </a>
+            </div>
+          </details>
+        </div>
+       <a class="pill" href="/queue/">Queue</a>
+        <a class="pill" href="/downloads/">Downloads</a>
+        <a class="pill" href="https://discord.gg/xXru9PEFdg" target="_blank" rel="noopener">Discord</a>
+</div>
+</nav>
+    </div>
+  </div>
+</header>
+
+<main class="container wide">
+  <div class="breadcrumb">Home / Applications / Staff</div>
+<section class="doc">
+  <h1>Staff Application</h1>
+  <p>Apply for IRP staff. This application focuses on judgment, bias control, calm communication, consistency, and discretion.</p>
+
+  <div class="callout">
+    <b>Important:</b> Answer honestly and with detail. Your application is sent directly to Discord for staff review.
+  </div>
+
+  <div class="kpi">
+    <span class="doc-pill">Estimated time: 20 to 35 minutes</span>
+    <span class="doc-pill">Submission: Direct to Discord</span>
+    <span class="doc-pill">Category: staff</span>
+  </div>
+
+  <form class="formgrid full" id="irpAppForm" data-app="staff">
+    <div class="field" style="grid-column:1/-1; margin-top:10px"><h2 style="margin:0">Basics & availability</h2></div>
+<div class="field">
+  <label>Discord username</label>
+  <input type="text" name="discord" placeholder="name#0000 or @name" required minlength="2" />
+</div>
+<div class="field">
+  <label>Preferred display name</label>
+  <input type="text" name="name" placeholder="What should we call you?" />
+</div>
+<div class="field">
+  <label>Age confirmation</label>
+  <select name="age_confirm" required>
+    <option value="">Select one...</option><option value="18_plus">I am 18+</option><option value="under_18">I am under 18</option>
+  </select>
+</div>
+<div class="field">
+  <label>Weekly availability (days/hours, realistic)</label>
+  <textarea name="availability" placeholder="Include peak hours you can cover" required minlength="10"></textarea>
+  
+</div>
+<div class="field">
+  <label>Prior staff experience (optional)</label>
+  <textarea name="staff_experience" placeholder="What you did and what you learned"></textarea>
+  
+</div>
+<div class="field" style="grid-column:1/-1; margin-top:10px"><h2 style="margin:0">Motivation & values</h2></div>
+<div class="field">
+  <label>Why do you want to be staff on IRP?</label>
+  <textarea name="why_staff" placeholder="Service mindset, not power" required minlength="60"></textarea>
+  
+</div>
+<div class="field">
+  <label>What values are you protective of? Which are flexible?</label>
+  <textarea name="values" placeholder="Community culture matters" required minlength="60"></textarea>
+  
+</div>
+<div class="field">
+  <label>What does fairness mean when two people tell different stories?</label>
+  <textarea name="fairness" placeholder="How do you evaluate reports?" required minlength="60"></textarea>
+  
+</div>
+<div class="field" style="grid-column:1/-1; margin-top:10px"><h2 style="margin:0">Judgment & bias awareness</h2></div>
+<div class="field">
+  <label>Describe a time you were wrong and changed your view after new info.</label>
+  <textarea name="changed_view" placeholder="We value humility and learning" required minlength="60"></textarea>
+  
+</div>
+<div class="field">
+  <label>What bias do you think you’re most at risk of? How do you counter it?</label>
+  <textarea name="bias" placeholder="Everyone has blind spots" required minlength="60"></textarea>
+  
+</div>
+<div class="field">
+  <label>How do you handle a report involving your friend or someone you dislike?</label>
+  <textarea name="conflict_interest" placeholder="Explain your boundaries" required minlength="50"></textarea>
+  
+</div>
+<div class="field" style="grid-column:1/-1; margin-top:10px"><h2 style="margin:0">Conflict handling & communication</h2></div>
+<div class="field">
+  <label>A player is rude to you in a ticket. What do you do?</label>
+  <textarea name="rude_ticket" placeholder="Tone and boundaries" required minlength="40"></textarea>
+  
+</div>
+<div class="field">
+  <label>Two players are escalating. How do you cool the temperature?</label>
+  <textarea name="escalation" placeholder="Steps and approach" required minlength="50"></textarea>
+  
+</div>
+<div class="field">
+  <label>How do you deliver consequences without humiliating people?</label>
+  <textarea name="consequences" placeholder="Accountability + respect" required minlength="50"></textarea>
+  
+</div>
+<div class="field" style="grid-column:1/-1; margin-top:10px"><h2 style="margin:0">Discretion & trust</h2></div>
+<div class="field">
+  <label>What information should never be shared publicly as staff?</label>
+  <textarea name="confidentiality" placeholder="Examples: reports, logs, private info" required minlength="40"></textarea>
+  
+</div>
+<div class="field">
+  <label>How do you handle staff discussions when someone is venting emotionally?</label>
+  <textarea name="staff_venting" placeholder="Keep it productive and safe" required minlength="40"></textarea>
+  
+</div>
+<div class="field" style="grid-column:1/-1; margin-top:10px"><h2 style="margin:0">Scenarios (must-answer)</h2></div>
+<div class="field">
+  <label>A player accuses staff of corruption in public chat. What do you do first?</label>
+  <textarea name="scenario_corruption" placeholder="First steps and why" required minlength="50"></textarea>
+  
+</div>
+<div class="field">
+  <label>You suspect a rule break but lack clear evidence. What do you do?</label>
+  <textarea name="scenario_no_evidence" placeholder="Balance fairness and safety" required minlength="50"></textarea>
+  
+</div>
+<div class="field">
+  <label>Someone reports harassment, but wants ‘no action’ and just to be heard. How do you respond?</label>
+  <textarea name="scenario_heard" placeholder="Empathy + boundaries" required minlength="60"></textarea>
+  
+</div>
+<div class="field">
+  <label>A staff member is inconsistent with punishments. How do you handle it?</label>
+  <textarea name="scenario_inconsistent" placeholder="Internal process" required minlength="50"></textarea>
+  
+</div>
+<div class="field">
+  <label>You made a bad call publicly. What’s the correct next move?</label>
+  <textarea name="scenario_bad_call" placeholder="Accountability" required minlength="40"></textarea>
+  
+</div>
+<div class="field" style="grid-column:1/-1; margin-top:10px"><h2 style="margin:0">Writing sample</h2></div>
+<div class="field">
+  <label>Write your ideal response to a frustrated player who just got denied an appeal.</label>
+  <textarea name="writing_sample" placeholder="Write it as if you are staff responding in a ticket." required minlength="100"></textarea>
+  
+</div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn primary" type="submit" id="appSubmitBtn">Submit Application</button>
+      <a class="btn" href="/applications/">Back</a>
+    </div>
+
+    <div id="appStatus" class="callout" style="margin-top:14px; display:none"></div>
+  </form>
+</section>
+</main>
+<footer class="footer">
+  <div class="container">© Illicit Roleplay (IRP) • Last updated: 13 February 2026 • Hosted on GitHub Pages / Cloudflare Pages.</div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.querySelector('.nav-toggle');
+  var panel = document.getElementById('navPanel');
+  if(!btn || !panel) return;
+
+  function closeMenu(){
+    panel.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  }
+
+  btn.addEventListener('click', function(){
+    var open = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Close on outside click (mobile)
+  document.addEventListener('click', function(e){
+    if (!panel.classList.contains('open')) return;
+    if (panel.contains(e.target) || btn.contains(e.target)) return;
+    closeMenu();
+  });
+
+  // Close when selecting a link
+  panel.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+})();
+</script>
+
+  <script src="/assets/js/docs.js"></script>
+  <script src="/assets/js/global.js"></script>
+  <script src="/assets/js/applications.js"></script>
+</body>
+</html>

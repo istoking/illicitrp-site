@@ -1,7 +1,10 @@
 (function(){
-  function esc(s){ return (s||'').toString().trim(); }
+  function qs(sel, root){ return (root||document).querySelector(sel); }
+  function qsa(sel, root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
 
-  // Site config (kept in /status.json so it is easy to change without touching multiple pages)
+  function esc(s){ return (s == null ? '' : String(s)).trim(); }
+
+  // ---- Config (status.json) ----
   var SITE_CFG = null;
 
   async function fetchFirstJson(paths){
@@ -10,9 +13,7 @@
         var r = await fetch(paths[i], { cache: 'no-store' });
         if(!r.ok) continue;
         return await r.json();
-      }catch(e){
-        // keep trying
-      }
+      }catch(e){}
     }
     return {};
   }
@@ -20,7 +21,6 @@
   async function loadSiteConfig(){
     if(SITE_CFG !== null) return SITE_CFG;
     try{
-      // Support GitHub Pages sub-path deployments (e.g. /repo/...) by trying relative fallbacks.
       SITE_CFG = await fetchFirstJson([
         '/status.json',
         '../status.json',
@@ -42,198 +42,178 @@
 
   async function getSupportHref(){
     var cfg = await loadSiteConfig();
-    var invite = (cfg && cfg.discord && cfg.discord.invite) ? String(cfg.discord.invite) : 'https://discord.gg/xXru9PEFdg';
-    var guildId = (cfg && cfg.discord && cfg.discord.guild_id) ? String(cfg.discord.guild_id) : '';
-    var channelId = (cfg && cfg.discord && cfg.discord.support_channel_id) ? String(cfg.discord.support_channel_id) : '';
-    if(guildId && channelId){
-      return 'https://discord.com/channels/' + guildId + '/' + channelId;
-    }
-    return invite;
+    var invite = (cfg && cfg.discord && cfg.discord.invite) ? cfg.discord.invite : null;
+    return invite || 'https://discord.gg/xXru9PEFdg';
   }
-  function makeBlock(title, fields){
-    var out = [];
-    out.push('**' + title + '**');
-    out.push('');
-    fields.forEach(function(f){
-      out.push('**' + f.label + ':** ' + (f.value || ''));
-      if(f.multiline && f.value){
-        out.push('');
-        out.push('```');
-        out.push(f.value);
-        out.push('```');
+
+  async function applySupportLinks(){
+    var href = await getSupportHref();
+    qsa('[data-support-link]').forEach(function(a){
+      a.setAttribute('href', href);
+    });
+  }
+
+  // ---- Form helpers ----
+  function setStatus(el, type, msg){
+    if(!el) return;
+    el.style.display = 'block';
+    el.className = 'callout';
+    if(type === 'ok') el.style.borderLeftColor = '#1db954';
+    if(type === 'warn') el.style.borderLeftColor = '#f5c542';
+    if(type === 'err') el.style.borderLeftColor = '#e5484d';
+    el.innerHTML = msg;
+  }
+
+  function disable(btn, on){
+    if(!btn) return;
+    btn.disabled = !!on;
+    btn.setAttribute('aria-disabled', on ? 'true' : 'false');
+  }
+
+  function collectPayload(form){
+    var payload = {};
+    qsa('input, select, textarea', form).forEach(function(el){
+      if(!el.name) return;
+      if(el.type === 'checkbox'){
+        payload[el.name] = !!el.checked;
+      }else{
+        payload[el.name] = esc(el.value);
       }
     });
-    return out.join('\n');
+
+    // Useful metadata (safe)
+    payload._meta = {
+      submittedAt: new Date().toISOString(),
+      page: location.pathname,
+      ref: document.referrer || '',
+      tz: (Intl && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : ''
+    };
+
+    return payload;
   }
 
-  function copyToClipboard(text){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      return navigator.clipboard.writeText(text);
-    }
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.left = '-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    return Promise.resolve();
-  }
+  function validate(form){
+    var bad = null;
+    qsa('input, select, textarea', form).some(function(el){
+      if(!el.name) return false;
 
-  // Render immediately so the UI always opens, even if config fetch is slow/hangs.
-  function renderOutput(targetEl, text, payload){
-    targetEl.style.display = 'block';
-    targetEl.innerHTML = [
-      '<div class="result" style="cursor:default">',
-        '<strong>Submission generated</strong>',
-        '<span>Copy to clipboard will also submit your application to staff.</span>',
-        '<div class="actions" style="margin-top:12px">',
-          '<button class="btn primary" id="copyBtn">Copy to Clipboard</button>',
-          '<a class="btn" id="supportBtn" target="_blank" rel="noopener">Open Discord Support</a>',
-        '</div>',
-        '<div class="muted" id="submitMsg" style="margin-top:10px; display:none;"></div>',
-        '<pre style="white-space:pre-wrap; margin-top:12px; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:12px; background: rgba(0,0,0,.18)"></pre>',
-      '</div>'
-    ].join('');
-    targetEl.querySelector('pre').textContent = text;
-
-    // Support link (channel deep-link when available, otherwise invite)
-    var supportBtn = targetEl.querySelector('#supportBtn');
-    supportBtn.href = 'https://discord.gg/xXru9PEFdg';
-    supportBtn.title = 'Opens the IRP Discord support channel. If you are not in the server yet, you may be prompted to join.';
-    // Update href asynchronously once config is loaded (non-blocking)
-    getSupportHref().then(function(href){
-      if(href) supportBtn.href = href;
-    }).catch(function(){});
-
-    var msgEl = targetEl.querySelector('#submitMsg');
-    var copyBtn = targetEl.querySelector('#copyBtn');
-    copyBtn.addEventListener('click', function(){
-      copyBtn.disabled = true;
-      msgEl.style.display = 'block';
-      msgEl.textContent = 'Copying to clipboard…';
-      copyToClipboard(text).then(function(){
-        copyBtn.textContent = 'Copied';
-        // Clipboard success should not be treated as a submission failure.
-        msgEl.textContent = 'Copied to clipboard. Submitting to staff…';
-        return submitToStaff(payload, msgEl);
-      }).catch(function(){
-        msgEl.textContent = 'Copy failed. Please manually select the text below and copy it, then use Open Discord Support.';
-      }).finally(function(){
-        copyBtn.disabled = false;
-        setTimeout(function(){ copyBtn.textContent = 'Copy to Clipboard'; }, 1500);
-      });
-    });
-  }
-
-  async function submitToStaff(payload, msgEl){
-    var base = await loadWorkerBase();
-    if(!base){
-      msgEl.style.display = 'block';
-      msgEl.textContent = 'Copied to clipboard. Auto-submit is not configured yet — please use Open Discord Support and submit via a ticket.';
-      return;
-    }
-    msgEl.style.display = 'block';
-    msgEl.textContent = 'Submitting to staff…';
-
-    try{
-      var r = await fetch(base + '/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      // Accept either JSON {ok:true} / {success:true} OR any 2xx with a non-JSON body.
-      var j = null;
-      try { j = await r.json(); } catch(_) {}
-      var ok = !!r.ok;
-      if(j && typeof j === 'object'){
-        if(j.ok === true || j.success === true) ok = true;
-        else if('ok' in j || 'success' in j) ok = false;
+      if(el.hasAttribute('required')){
+        if(el.type === 'checkbox'){
+          if(!el.checked){ bad = el; return true; }
+        }else{
+          if(esc(el.value).length === 0){ bad = el; return true; }
+        }
       }
 
-      if(ok) msgEl.textContent = 'Copied to clipboard. Submitted to staff successfully.';
-      else msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
-    }catch(e){
-      msgEl.textContent = 'Copied to clipboard, but auto-submit failed. Please use Open Discord Support and submit via a ticket.';
+      var ml = el.getAttribute('minlength');
+      if(ml && esc(el.value).length > 0 && esc(el.value).length < parseInt(ml, 10)){
+        bad = el; return true;
+      }
+
+      return false;
+    });
+
+    return bad;
+  }
+
+  function endpointFor(app){
+    if(app === 'server') return '/applications/server';
+    if(app === 'job') return '/applications/job';
+    if(app === 'staff') return '/applications/staff';
+    return null;
+  }
+
+  // ---- Job-specific prompt ----
+  function applyJobPrompt(form){
+    var sel = qs('select[name="job_role"]', form);
+    var box = qs('textarea[name="job_specific"]', form);
+    if(!sel || !box) return;
+
+    function update(){
+      var v = sel.value;
+      var ph = 'After selecting a role above, answer with your approach and expectations for that role.';
+      if(v === 'police'){
+        ph = 'Police: talk escalation ladder, fairness, use of force, report writing, and how you avoid “win mindset”.';
+      }else if(v === 'ems'){
+        ph = 'EMS: talk triage, pacing, patient consent, keeping scenes engaging, and teamwork.';
+      }else if(v === 'mechanic'){
+        ph = 'Mechanic: talk building RP (not menu-shop), pricing disputes, customer handling, and scene pacing.';
+      }else if(v === 'law'){
+        ph = 'Law: talk fairness, accessibility, handling bias, and making cases fun for both sides.';
+      }else if(v === 'business'){
+        ph = 'Business/Other: talk professionalism, reliability, building RP, and how you contribute to server culture.';
+      }
+      box.setAttribute('placeholder', ph);
     }
+
+    sel.addEventListener('change', update);
+    update();
   }
 
-  function initJoin(){
-    var btn = document.getElementById('appBuild');
-    if(!btn) return;
-    btn.addEventListener('click', function(){
-      var fields = [
-        {label:'Discord', value:esc(document.getElementById('a_discord').value)},
-        {label:'Timezone', value:esc(document.getElementById('a_tz').value)},
-        {label:'Age bracket', value:esc(document.getElementById('a_age').value)},
-        {label:'RP experience', value:esc(document.getElementById('a_exp').value)},
-        {label:'Character concept', value:esc(document.getElementById('q_char').value), multiline:true},
-        {label:'Handling loss', value:esc(document.getElementById('q_loss').value), multiline:true},
-        {label:'Conflict and escalation', value:esc(document.getElementById('q_escalation').value), multiline:true},
-        {label:'Mechanical issues mid-scene', value:esc(document.getElementById('q_mech').value), multiline:true},
-        {label:'Accountability', value:esc(document.getElementById('q_account').value), multiline:true},
-        {label:'Staff interaction', value:esc(document.getElementById('q_staff').value), multiline:true},
-        {label:'Final note', value:esc(document.getElementById('q_final').value), multiline:true},
-      ];
-      var text = makeBlock('IRP Join Application', fields);
-      var out = document.getElementById('appOutWrap');
+  async function initApplicationForm(){
+    var form = qs('#irpAppForm');
+    if(!form) return;
 
-      var payload = {
-        type: 'Join Application',
-        name: esc(document.getElementById('a_name') ? document.getElementById('a_name').value : ''),
-        discord: esc(document.getElementById('a_discord').value),
-        timezone: esc(document.getElementById('a_tz').value),
-        age_bracket: esc(document.getElementById('a_age').value),
-        rp_experience: esc(document.getElementById('a_exp').value),
-        character_concept: esc(document.getElementById('q_char').value),
-        handling_loss: esc(document.getElementById('q_loss').value),
-        conflict_escalation: esc(document.getElementById('q_escalation').value),
-        mechanical_issues: esc(document.getElementById('q_mech').value),
-        accountability: esc(document.getElementById('q_account').value),
-        staff_interaction: esc(document.getElementById('q_staff').value),
-        final_note: esc(document.getElementById('q_final').value)
-      };
+    var app = form.getAttribute('data-app');
+    var endpoint = endpointFor(app);
+    if(!endpoint) return;
 
-      renderOutput(out, text, payload);
+    var statusEl = qs('#appStatus');
+    var btn = qs('#appSubmitBtn');
+
+    if(app === 'job') applyJobPrompt(form);
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+
+      var bad = validate(form);
+      if(bad){
+        bad.focus({ preventScroll: false });
+        setStatus(statusEl, 'err', '<b>Please complete all required fields.</b> Some answers may also require more detail.');
+        return;
+      }
+
+      disable(btn, true);
+      setStatus(statusEl, 'warn', 'Submitting your application…');
+
+      try{
+        var base = await loadWorkerBase();
+        if(!base){
+          disable(btn, false);
+          setStatus(statusEl, 'err', 'Worker base URL is not configured. Please contact staff.');
+          return;
+        }
+
+        var payload = collectPayload(form);
+        var r = await fetch(base + endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        var data = null;
+        try{ data = await r.json(); }catch(_e){}
+
+        if(!r.ok){
+          var msg = (data && data.error) ? data.error : ('Submission failed (HTTP ' + r.status + ').');
+          disable(btn, false);
+          setStatus(statusEl, 'err', '<b>Could not submit your application.</b><br>' + msg);
+          return;
+        }
+
+        setStatus(statusEl, 'ok', '<b>Application submitted!</b> Staff will review it in Discord. You may be contacted for follow-up questions.');
+        form.reset();
+        if(app === 'job') applyJobPrompt(form); // reset placeholder
+      }catch(err){
+        disable(btn, false);
+        setStatus(statusEl, 'err', '<b>Network error.</b> Please try again in a moment.');
+      }
     });
   }
 
-  function initWhitelist(){
-    var btn = document.getElementById('wlBuild');
-    if(!btn) return;
-    btn.addEventListener('click', function(){
-      var fields = [
-        {label:'Discord', value:esc(document.getElementById('w_discord').value)},
-        {label:'Role', value:esc(document.getElementById('w_role').value)},
-        {label:'Why this role', value:esc(document.getElementById('w_why').value), multiline:true},
-        {label:'Under pressure', value:esc(document.getElementById('w_pressure').value), multiline:true},
-        {label:'Neutrality and professionalism', value:esc(document.getElementById('w_neutral').value), multiline:true},
-        {label:'Knowledge check', value:esc(document.getElementById('w_knowledge').value), multiline:true},
-        {label:'Availability', value:esc(document.getElementById('w_avail').value), multiline:true},
-      ];
-      var text = makeBlock('IRP Whitelist Application', fields);
-      var out = document.getElementById('wlOutWrap');
-
-      var payload = {
-        type: 'Whitelist Application',
-        name: esc(document.getElementById('w_name') ? document.getElementById('w_name').value : ''),
-        discord: esc(document.getElementById('w_discord').value),
-        role: esc(document.getElementById('w_role').value),
-        why_this_role: esc(document.getElementById('w_why').value),
-        under_pressure: esc(document.getElementById('w_pressure').value),
-        neutrality_professionalism: esc(document.getElementById('w_neutral').value),
-        knowledge_check: esc(document.getElementById('w_knowledge').value),
-        availability: esc(document.getElementById('w_avail').value)
-      };
-
-      renderOutput(out, text, payload);
-    });
-  }
-
-  function init(){
-    initJoin();
-    initWhitelist();
+  async function init(){
+    await applySupportLinks();
+    await initApplicationForm();
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
